@@ -420,7 +420,7 @@ async function loadSiteData() {
     return;
   }
   try {
-    const res = await fetch(SCRIPT_URL + '?action=getAll');
+    const res = await fetch(SCRIPT_URL + '?action=getAll&t=' + Date.now());
     const d   = await res.json();
     if (d.success) { SD = d; initSite(); }
     else { SD = getDemoData(); initSite(); }
