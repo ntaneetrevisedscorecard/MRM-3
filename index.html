@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mata Rajrani Memorial Hospital</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ─── PASTE YOUR GOOGLE APPS SCRIPT URL BELOW ─── */
+/* Find: https://script.google.com/macros/s/AKfycbzY1y2blxtTjzsdQnd3G01-gQ7i9wboJjDV9kcTdTpn9hqc_3nsgy7xyeADt2AfPKuQ/exec                 */
+/* ─────────────────────────────────────────────── */
+:root{--teal:#14b8a6;--teal-dark:#0f9488;--teal-light:#e6faf8;--dark:#1a1a2e;--text:#374151;--muted:#6b7280;--border:#e5e7eb;--bg:#f0fafa;--white:#fff;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}body{font-family:'Poppins',sans-serif;color:var(--text);overflow-x:hidden;}
+.top-bar{background:var(--teal);color:white;padding:8px 40px;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:500;}
+.emg-badge{background:rgba(255,255,255,0.2);padding:3px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;}
+nav{position:sticky;top:0;z-index:900;background:white;padding:14px 40px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 20px rgba(0,0,0,0.08);transition:box-shadow 0.3s;}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-icon{width:44px;height:44px;border-radius:50%;background:var(--teal);color:white;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.logo-text h1{font-size:17px;font-weight:700;color:var(--dark);line-height:1.1;}
+.logo-text span{font-size:11px;color:var(--muted);}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{text-decoration:none;color:var(--text);font-size:14px;font-weight:500;position:relative;padding-bottom:4px;transition:color 0.3s;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--teal);transition:width 0.3s;}
+.nav-links a:hover{color:var(--teal);}.nav-links a:hover::after{width:100%;}
+.nav-actions{display:flex;align-items:center;gap:12px;}
+.btn-login{background:none;border:none;color:var(--text);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;transition:color 0.3s;}
+.btn-login:hover{color:var(--teal);}
+.btn-primary{background:var(--teal);color:white;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s;text-decoration:none;display:inline-block;}
+.btn-primary:hover{background:var(--teal-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(20,184,166,0.4);}
+.hero{position:relative;min-height:90vh;background:url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1600&q=80') center/cover no-repeat;display:flex;align-items:center;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,30,50,0.82) 0%,rgba(15,30,50,0.45) 60%,transparent 100%);}
+.hero-content{position:relative;z-index:1;padding:0 80px;max-width:700px;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);color:white;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500;margin-bottom:24px;border:1px solid rgba(255,255,255,0.2);opacity:0;animation:fadeUp 0.8s 0.2s forwards;}
+.hero-title{font-size:clamp(36px,5vw,60px);font-weight:800;color:white;line-height:1.15;margin-bottom:20px;opacity:0;animation:fadeUp 0.8s 0.4s forwards;}
+.hero-title span{color:var(--teal);}
+.hero-sub{color:rgba(255,255,255,0.85);font-size:16px;line-height:1.7;margin-bottom:36px;opacity:0;animation:fadeUp 0.8s 0.6s forwards;}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s 0.8s forwards;}
+.btn-hero{background:var(--teal);color:white;border:none;padding:13px 28px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s;text-decoration:none;}
+.btn-hero:hover{background:var(--teal-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(20,184,166,0.5);}
+.btn-out-hero{background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,0.5);color:white;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.btn-out-hero:hover{background:rgba(255,255,255,0.25);border-color:white;}
+/* Booking Section */
+.book-section{background:white;padding:80px 40px;}
+.sec-label{color:var(--teal);font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:12px;}
+.sec-title{font-size:clamp(28px,3vw,40px);font-weight:800;color:var(--dark);text-align:center;margin-bottom:16px;}
+.sec-sub{color:var(--muted);font-size:15px;text-align:center;max-width:640px;margin:0 auto 50px;line-height:1.7;}
+.book-tabs{display:flex;justify-content:center;gap:0;margin-bottom:48px;background:var(--bg);border-radius:16px;padding:6px;max-width:680px;margin-left:auto;margin-right:auto;}
+.book-tab{flex:1;padding:14px 20px;border:none;background:none;cursor:pointer;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;color:var(--muted);border-radius:12px;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.book-tab.active{background:white;color:var(--teal);box-shadow:0 4px 16px rgba(0,0,0,0.1);}
+.book-tab i{font-size:15px;}
+.book-panel{display:none;}.book-panel.active{display:block;}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;max-width:1100px;margin:0 auto 32px;}
+.cat-card{background:var(--bg);border:2px solid transparent;border-radius:14px;padding:24px 20px;cursor:pointer;transition:all 0.3s;text-align:center;}
+.cat-card:hover,.cat-card.sel{border-color:var(--teal);background:var(--teal-light);transform:translateY(-4px);box-shadow:0 12px 30px rgba(20,184,166,0.15);}
+.cat-icon{width:52px;height:52px;border-radius:12px;background:rgba(20,184,166,0.12);display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:20px;margin:0 auto 14px;transition:all 0.3s;}
+.cat-card:hover .cat-icon,.cat-card.sel .cat-icon{background:var(--teal);color:white;}
+.cat-card h3{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+.cat-card p{font-size:12px;color:var(--muted);}
+.test-list-wrap{max-width:1100px;margin:0 auto;}
+.back-btn{background:none;border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--text);transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;margin-bottom:20px;}
+.back-btn:hover{border-color:var(--teal);color:var(--teal);}
+.list-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
+.list-header h3{font-size:20px;font-weight:700;color:var(--dark);}
+.tests-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.test-card{background:white;border:1px solid var(--border);border-radius:14px;padding:22px;cursor:pointer;transition:all 0.3s;}
+.test-card:hover{border-color:var(--teal);transform:translateY(-4px);box-shadow:0 12px 30px rgba(20,184,166,0.12);}
+.tc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.tc-top h4{font-size:15px;font-weight:700;color:var(--dark);flex:1;margin-right:12px;}
+.price-tag{background:var(--teal-light);color:var(--teal);padding:4px 10px;border-radius:8px;font-size:13px;font-weight:700;white-space:nowrap;}
+.tc-meta{font-size:12px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.tc-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.tc-prep{font-size:11px;color:#f59e0b;background:#fffbeb;padding:6px 10px;border-radius:6px;margin-top:10px;border-left:3px solid #f59e0b;}
+.sel-btn{display:block;width:100%;margin-top:14px;background:var(--teal);color:white;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s;}
+.sel-btn:hover{background:var(--teal-dark);}
+.dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;max-width:1100px;margin:0 auto;}
+.dept-card{background:white;border:1.5px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all 0.3s;display:flex;align-items:flex-start;gap:16px;}
+.dept-card:hover{border-color:var(--teal);transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,184,166,0.12);}
+.dept-icon{width:46px;height:46px;border-radius:10px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:18px;flex-shrink:0;transition:all 0.3s;}
+.dept-card:hover .dept-icon{background:var(--teal);color:white;}
+.dept-info h4{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+.dept-info p{font-size:12px;color:var(--muted);line-height:1.5;}
+.dept-fee{margin-top:8px;font-size:14px;font-weight:700;color:var(--teal);}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;max-width:1100px;margin:0 auto;}
+.home-card{background:white;border:1.5px solid var(--border);border-radius:16px;padding:24px;cursor:pointer;transition:all 0.3s;}
+.home-card:hover{border-color:var(--teal);transform:translateY(-4px);box-shadow:0 12px 32px rgba(20,184,166,0.15);}
+.hc-head{display:flex;align-items:center;gap:16px;margin-bottom:14px;}
+.hc-icon{width:52px;height:52px;border-radius:12px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:22px;transition:all 0.3s;}
+.home-card:hover .hc-icon{background:var(--teal);color:white;}
+.hc-head h3{font-size:16px;font-weight:700;color:var(--dark);}
+.hc-avail{font-size:12px;color:var(--muted);margin-top:2px;}
+.home-card>p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+.hc-book-btn{display:block;width:100%;background:var(--teal);color:white;border:none;padding:11px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s;text-align:center;}
+.hc-book-btn:hover{background:var(--teal-dark);}
+.hc-price{font-size:14px;font-weight:700;color:var(--teal);margin-bottom:12px;}
+/* Site Sections */
+section.ss{padding:80px 40px;}
+.bg-white{background:white;}.bg-teal{background:var(--bg);}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px;margin:0 auto;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1200px;margin:0 auto;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;max-width:1200px;margin:0 auto;}
+.g3d{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px;margin:0 auto;}
+.info-card{background:var(--teal-light);border-radius:16px;padding:36px 28px;text-align:center;transition:transform 0.3s,box-shadow 0.3s;border:1px solid rgba(20,184,166,0.1);}
+.info-card:hover{transform:translateY(-8px);box-shadow:0 20px 50px rgba(20,184,166,0.15);}
+.ic-icon{width:56px;height:56px;border-radius:50%;background:rgba(20,184,166,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--teal);font-size:20px;}
+.info-card h3{font-size:17px;font-weight:700;color:var(--dark);margin-bottom:12px;}
+.info-card p{font-size:14px;color:var(--muted);line-height:1.7;}
+.svc-card{background:white;border-radius:14px;padding:28px 22px;border:1px solid var(--border);transition:all 0.3s;}
+.svc-card:hover{border-color:var(--teal);transform:translateY(-6px);box-shadow:0 16px 40px rgba(20,184,166,0.12);}
+.svc-card:hover .si{background:var(--teal);color:white;}
+.si{width:46px;height:46px;border-radius:10px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:18px;margin-bottom:16px;transition:all 0.3s;}
+.svc-card h3{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:8px;}
+.svc-card p{font-size:13px;color:var(--muted);line-height:1.6;}
+/* Doctor cards with photo */
+.doc-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;background:white;}
+.doc-card:hover{border-color:var(--teal);box-shadow:0 16px 40px rgba(20,184,166,0.12);transform:translateY(-4px);}
+.doc-photo{width:100%;height:180px;object-fit:cover;display:block;background:var(--teal-light);}
+.doc-photo-placeholder{width:100%;height:180px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:52px;}
+.doc-body{padding:20px;}
+.doc-body h3{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.spec-badge{display:inline-block;background:var(--teal-light);color:var(--teal);padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:10px;}
+.doc-body .exp{font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500;}
+.doc-body .desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.fac-card{background:white;border-radius:14px;padding:28px 18px;text-align:center;border:1px solid var(--border);transition:all 0.3s;}
+.fac-card:hover{border-color:var(--teal);transform:translateY(-6px);box-shadow:0 12px 30px rgba(20,184,166,0.12);}
+.fi{width:48px;height:48px;border-radius:50%;background:var(--teal-light);display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:18px;margin:0 auto 14px;}
+.fac-card h3{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:8px;}
+.fac-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+.ct-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:40px;max-width:1100px;margin:0 auto;align-items:start;}
+.ct-info{display:flex;flex-direction:column;gap:24px;}
+.ct-item{display:flex;align-items:flex-start;gap:16px;}
+.cti{width:40px;height:40px;border-radius:10px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:15px;flex-shrink:0;}
+.ct-item h4{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+.ct-item p{font-size:13px;color:var(--muted);line-height:1.6;}
+.map-wrap{border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.1);}
+.map-wrap iframe{width:100%;height:340px;border:none;display:block;}
+footer{background:#111827;color:white;padding:50px 60px 24px;}
+.fg{display:grid;grid-template-columns:1.5fr 1fr 1fr 0.8fr;gap:40px;margin-bottom:40px;}
+.fb p{font-size:13px;color:#9ca3af;line-height:1.7;margin-top:12px;}
+.fc h4{font-size:15px;font-weight:600;margin-bottom:16px;}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.fc ul li a{color:#9ca3af;text-decoration:none;font-size:13px;transition:color 0.3s;}
+.fc ul li a:hover{color:var(--teal);}
+.fc p{color:#9ca3af;font-size:13px;line-height:1.8;}
+.sc{display:flex;gap:12px;margin-top:8px;}
+.sb{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;color:#9ca3af;text-decoration:none;font-size:15px;transition:all 0.3s;}
+.sb:hover{background:var(--teal);color:white;}
+.fb-bot{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#6b7280;}
+.fb-bot a{color:#6b7280;text-decoration:none;margin-left:20px;}
+.fb-bot a:hover{color:var(--teal);}
+/* Booking Modal */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-ov.open{display:flex;}
+.modal{background:white;border-radius:20px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:slideUp 0.4s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.m-head{padding:22px 26px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;}
+.m-head h2{font-size:18px;font-weight:700;color:var(--dark);}
+.m-head p{font-size:12px;color:var(--muted);margin-top:3px;}
+.m-close{background:none;border:none;cursor:pointer;color:var(--muted);font-size:20px;padding:4px;transition:color 0.2s;}
+.m-close:hover{color:var(--dark);}
+.m-body{padding:22px 26px;}
+.sel-card{background:var(--teal-light);border-radius:12px;padding:16px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;}
+.sel-card .sn{font-size:15px;font-weight:700;color:var(--dark);}
+.sel-card .sm{font-size:12px;color:var(--muted);margin-top:2px;}
+.sel-card .sp{font-size:22px;font-weight:800;color:var(--teal);}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.f-row.one{grid-template-columns:1fr;}
+.fg2{display:flex;flex-direction:column;gap:5px;}
+.fg2 label{font-size:11px;font-weight:600;color:var(--text);}
+.fg2 input,.fg2 select,.fg2 textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'Poppins',sans-serif;font-size:13px;color:var(--text);transition:border-color 0.2s;outline:none;}
+.fg2 input:focus,.fg2 select:focus,.fg2 textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,0.1);}
+.div-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;display:flex;align-items:center;gap:8px;}
+.div-label::before,.div-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.slot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:6px;}
+.slot-btn{padding:8px 4px;border:1.5px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;color:var(--text);transition:all 0.2s;text-align:center;}
+.slot-btn:hover,.slot-btn.on{border-color:var(--teal);background:var(--teal-light);color:var(--teal);}
+.m-foot{padding:14px 26px 22px;display:flex;gap:12px;}
+.btn-proceed{flex:1;background:var(--teal);color:white;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-proceed:hover{background:var(--teal-dark);transform:translateY(-1px);box-shadow:0 8px 24px rgba(20,184,166,0.4);}
+.btn-proceed:disabled{opacity:0.7;cursor:not-allowed;transform:none;}
+.btn-can{background:var(--bg);color:var(--text);border:none;padding:14px 20px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:all 0.2s;}
+.btn-can:hover{background:var(--border);}
+/* Success */
+.suc-ov{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;}
+.suc-ov.open{display:flex;}
+.suc-box{background:white;border-radius:20px;padding:48px 40px;text-align:center;max-width:420px;animation:slideUp 0.4s ease;}
+.suc-icon{width:80px;height:80px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:#22c55e;font-size:32px;}
+.suc-box h2{font-size:22px;font-weight:800;color:var(--dark);margin-bottom:10px;}
+.suc-box p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+.suc-ref{background:var(--bg);border-radius:10px;padding:12px 20px;font-size:14px;font-weight:700;color:var(--teal);margin-bottom:22px;}
+/* Loading skeleton */
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+/* Animations */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.stagger>*{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.stagger.visible>*:nth-child(1){opacity:1;transform:none;transition-delay:0.1s;}.stagger.visible>*:nth-child(2){opacity:1;transform:none;transition-delay:0.2s;}.stagger.visible>*:nth-child(3){opacity:1;transform:none;transition-delay:0.3s;}.stagger.visible>*:nth-child(4){opacity:1;transform:none;transition-delay:0.4s;}.stagger.visible>*:nth-child(5){opacity:1;transform:none;transition-delay:0.5s;}.stagger.visible>*:nth-child(6){opacity:1;transform:none;transition-delay:0.6s;}
+@media(max-width:1024px){.g4,.g5{grid-template-columns:repeat(2,1fr);}.fg{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){nav{padding:12px 20px;}.nav-links{display:none;}.hero-content{padding:0 24px;}.book-tabs{flex-direction:column;}.g3,.g3d,.ct-grid{grid-template-columns:1fr;}.g4,.g5{grid-template-columns:1fr 1fr;}.f-row{grid-template-columns:1fr;}.slot-grid{grid-template-columns:repeat(3,1fr);}footer{padding:40px 20px 20px;}.fg{grid-template-columns:1fr;}.fb-bot{flex-direction:column;gap:10px;}.top-bar{font-size:11px;padding:6px 16px;}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div style="display:flex;align-items:center;gap:20px;">
+    <span><i class="fas fa-phone-alt" style="margin-right:6px;"></i><span id="tb-ph">Loading...</span></span>
+    <span class="emg-badge"><i class="fas fa-ambulance"></i> Emergency: <span id="tb-emg">...</span></span>
+  </div>
+  <span id="tb-addr">Ambikapur, C.G.</span>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#" class="logo">
+    <div class="logo-icon">M</div>
+    <div class="logo-text"><h1 id="nav-name">Mata Rajrani</h1><span>Memorial Hospital</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li><li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li><li><a href="#book">Book</a></li>
+    <li><a href="#doctors">Doctors</a></li><li><a href="#facilities">Facilities</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-login"><i class="fas fa-user-circle"></i> Patient Login</button>
+    <a href="#book" class="btn-primary">Book Appointment</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🏥 Trusted Healthcare Since <span id="h-yr">2005</span></div>
+    <h1 class="hero-title">Compassionate Care,<br><span id="h-tag">Advanced Healing.</span></h1>
+    <p class="hero-sub">Providing world-class healthcare services to Ambikapur and surrounding regions.</p>
+    <div class="hero-btns">
+      <a href="#book" class="btn-hero">Book Appointment</a>
+      <a href="#" id="emg-btn" class="btn-out-hero"><i class="fas fa-phone-alt"></i> Emergency</a>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING SECTION -->
+<div id="book" class="book-section">
+  <div class="reveal">
+    <p class="sec-label">Book Online</p>
+    <h2 class="sec-title">Schedule Your Care</h2>
+    <p class="sec-sub">Choose from diagnostic tests, specialist consultations, or home healthcare visits — all online.</p>
+  </div>
+  <div class="book-tabs">
+    <button class="book-tab active" onclick="switchTab('test',this)"><i class="fas fa-flask"></i> Book a Test</button>
+    <button class="book-tab" onclick="switchTab('appt',this)"><i class="fas fa-user-md"></i> Book Appointment</button>
+    <button class="book-tab" onclick="switchTab('home',this)"><i class="fas fa-home"></i> Home Service</button>
+  </div>
+  <div id="panel-test" class="book-panel active">
+    <div id="test-cats"></div>
+    <div id="test-list" style="display:none;"></div>
+  </div>
+  <div id="panel-appt" class="book-panel">
+    <div class="dept-grid" id="dept-grid"></div>
+  </div>
+  <div id="panel-home" class="book-panel">
+    <div class="home-grid" id="home-grid"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="ss bg-white">
+  <div class="reveal"><p class="sec-label">About Us</p><h2 class="sec-title">Mata Rajrani Memorial Hospital</h2><p class="sec-sub">Established with a vision to provide affordable, quality healthcare to Ambikapur and the surrounding tribal and rural communities of Chhattisgarh.</p></div>
+  <div class="g3 stagger">
+    <div class="info-card"><div class="ic-icon"><i class="fas fa-bullseye"></i></div><h3>Our Mission</h3><p>To deliver comprehensive, patient-centered medical services using modern technology while keeping healthcare accessible and affordable for every family.</p></div>
+    <div class="info-card"><div class="ic-icon"><i class="fas fa-eye"></i></div><h3>Our Vision</h3><p>To be the leading healthcare institution in Central India, recognized for clinical excellence, innovation, and compassionate care that transforms lives.</p></div>
+    <div class="info-card"><div class="ic-icon"><i class="fas fa-check-circle"></i></div><h3>Infrastructure</h3><p>24/7 Emergency, fully-equipped ICU, Neonatal ICU, modern Operation Theaters, in-house Pathology Lab, Pharmacy, and ample parking.</p></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="ss bg-teal">
+  <div class="reveal"><p class="sec-label">Our Services</p><h2 class="sec-title">Departments & Specialties</h2><p class="sec-sub">We offer a wide range of medical services under one roof, staffed by experienced specialists.</p></div>
+  <div class="g4 stagger">
+    <div class="svc-card"><div class="si"><i class="fas fa-stethoscope"></i></div><h3>General Medicine</h3><p>Chronic disease management and preventive health check-ups.</p></div>
+    <div class="svc-card"><div class="si"><i class="fas fa-baby"></i></div><h3>Pediatrics</h3><p>Expert child healthcare from newborn to adolescent.</p></div>
+    <div class="svc-card"><div class="si"><i class="fas fa-bone"></i></div><h3>Orthopedics</h3><p>Fracture care, joint replacement, sports injuries.</p></div>
+    <div class="svc-card"><div class="si"><i class="fas fa-heartbeat"></i></div><h3>Gynecology</h3><p>Prenatal care, deliveries, and gynecological surgeries.</p></div>
+    <div class="svc-card"><div class="si"><i class="fas fa-heart"></i></div><h3>Cardiology</h3><p>Heart diagnostics, ECG, and preventive cardiac care.</p></div>
+    <div class="svc-card"><div class="si"><i class="fas fa-running"></i></div><h3>Physiotherapy</h3><p>Rehabilitation, post-surgical recovery, pain management.</p></div>
+    <div class="svc-card"><div class="si"><i class="fas fa-deaf"></i></div><h3>ENT</h3><p>Ear, Nose & Throat care including microsurgeries.</p></div>
+    <div class="svc-card"><div class="si"><i class="fas fa-ambulance"></i></div><h3>24/7 Ambulance</h3><p>Emergency ambulance covering Ambikapur region.</p></div>
+  </div>
+</section>
+
+<!-- DOCTORS -->
+<section id="doctors" class="ss bg-white">
+  <div class="reveal"><p class="sec-label">Our Specialists</p><h2 class="sec-title">Meet Our Doctors</h2><p class="sec-sub">Our team of experienced and dedicated physicians provide expert care across all specialties.</p></div>
+  <div class="g3d stagger" id="doctors-grid">
+    <!-- Skeleton placeholders -->
+    <div class="doc-card"><div style="height:180px;" class="skeleton"></div><div class="doc-body"><div style="height:16px;width:60%;margin-bottom:8px;" class="skeleton"></div><div style="height:12px;width:40%;margin-bottom:12px;" class="skeleton"></div><div style="height:12px;width:90%;" class="skeleton"></div></div></div>
+    <div class="doc-card"><div style="height:180px;" class="skeleton"></div><div class="doc-body"><div style="height:16px;width:60%;margin-bottom:8px;" class="skeleton"></div><div style="height:12px;width:40%;margin-bottom:12px;" class="skeleton"></div><div style="height:12px;width:90%;" class="skeleton"></div></div></div>
+    <div class="doc-card"><div style="height:180px;" class="skeleton"></div><div class="doc-body"><div style="height:16px;width:60%;margin-bottom:8px;" class="skeleton"></div><div style="height:12px;width:40%;margin-bottom:12px;" class="skeleton"></div><div style="height:12px;width:90%;" class="skeleton"></div></div></div>
+  </div>
+</section>
+
+<!-- FACILITIES -->
+<section id="facilities" class="ss bg-teal">
+  <div class="reveal"><p class="sec-label">Facilities</p><h2 class="sec-title">World-Class Infrastructure</h2><p class="sec-sub">Equipped with modern facilities to ensure the best outcomes for every patient.</p></div>
+  <div class="g5 stagger">
+    <div class="fac-card"><div class="fi"><i class="fas fa-procedures"></i></div><h3>Operation Theaters</h3><p>Modular OTs with laminar air flow and advanced surgical equipment.</p></div>
+    <div class="fac-card"><div class="fi"><i class="fas fa-heartbeat"></i></div><h3>Intensive Care Unit</h3><p>24/7 monitored ICU with ventilator support.</p></div>
+    <div class="fac-card"><div class="fi"><i class="fas fa-baby-carriage"></i></div><h3>Neonatal ICU</h3><p>Specialized NICU for premature and critically ill newborns.</p></div>
+    <div class="fac-card"><div class="fi"><i class="fas fa-pills"></i></div><h3>In-House Pharmacy</h3><p>Fully stocked pharmacy available round the clock.</p></div>
+    <div class="fac-card"><div class="fi"><i class="fas fa-parking"></i></div><h3>Parking Facility</h3><p>Ample free parking space for patients and visitors.</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="ss bg-white">
+  <div class="reveal"><p class="sec-label">Contact Us</p><h2 class="sec-title">Get in Touch</h2><p class="sec-sub">We're here for you. Reach out for any queries or emergencies.</p></div>
+  <div class="ct-grid reveal">
+    <div class="ct-info">
+      <div class="ct-item"><div class="cti"><i class="fas fa-map-marker-alt"></i></div><div><h4>Address</h4><p id="ct-addr">Loading...</p></div></div>
+      <div class="ct-item"><div class="cti"><i class="fas fa-phone-alt"></i></div><div><h4>Phone</h4><p>Contact: <span id="ct-ph">...</span><br>Emergency: <span id="ct-emg">...</span></p></div></div>
+      <div class="ct-item"><div class="cti"><i class="fas fa-clock"></i></div><div><h4>Working Hours</h4><p>OPD: <span id="ct-opd">Mon – Sat, 9:00 AM – 5:00 PM</span><br>Emergency: 24/7</p></div></div>
+      <a href="https://maps.google.com" target="_blank" style="display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;transition:all 0.3s;width:fit-content;" onmouseover="this.style.borderColor='var(--teal)';this.style.color='var(--teal)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'"><i class="fas fa-external-link-alt"></i> Get Directions</a>
+    </div>
+    <div class="map-wrap"><iframe id="ct-map" src="" allowfullscreen loading="lazy" style="width:100%;height:340px;border:none;display:block;"></iframe></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fg">
+    <div class="fb">
+      <div class="logo"><div class="logo-icon">M</div><div class="logo-text"><h1 style="color:white;" id="ft-name">Mata Rajrani</h1><span style="color:#9ca3af;">Memorial Hospital</span></div></div>
+      <p id="ft-addr">Joda Talab, Ambikapur, C.G.<br>Providing compassionate, quality healthcare to every family.</p>
+    </div>
+    <div class="fc"><h4>Quick Links</h4><ul><li><a href="#home">Home</a></li><li><a href="#about">About Us</a></li><li><a href="#services">Services</a></li><li><a href="#doctors">Doctors</a></li><li><a href="#book">Book Online</a></li><li><a href="#contact">Contact</a></li></ul></div>
+    <div class="fc"><h4>Contact</h4><p><i class="fas fa-phone-alt" style="color:var(--teal);margin-right:8px;"></i><span id="ft-ph">...</span></p><p style="margin-top:8px;"><i class="fas fa-ambulance" style="color:var(--teal);margin-right:8px;"></i>Emergency: <span id="ft-emg">...</span></p></div>
+    <div class="fc"><h4>Follow Us</h4><div class="sc"><a id="ft-fb" href="#" class="sb"><i class="fab fa-facebook-f"></i></a><a id="ft-ig" href="#" class="sb"><i class="fab fa-instagram"></i></a></div></div>
+  </div>
+  <div class="fb-bot">
+    <span>© 2026 <span id="ft-full">Mata Rajrani Memorial Hospital</span>. All rights reserved.</span>
+    <div><a href="#">Privacy Policy</a><a href="#">Disclaimer</a></div>
+  </div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-ov" id="bk-modal">
+  <div class="modal">
+    <div class="m-head">
+      <div><h2 id="m-title">Book Your Test</h2><p id="m-sub">Fill in details and select a time slot</p></div>
+      <button class="m-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="m-body">
+      <div class="sel-card">
+        <div><div class="sn" id="m-name">—</div><div class="sm" id="m-meta">—</div></div>
+        <div class="sp" id="m-price">₹0</div>
+      </div>
+      <div class="div-label">Patient Details</div>
+      <div class="f-row">
+        <div class="fg2"><label>Patient Name *</label><input id="f-name" placeholder="Full name"></div>
+        <div class="fg2"><label>Age *</label><input type="number" id="f-age" placeholder="Age" min="0" max="120"></div>
+      </div>
+      <div class="f-row">
+        <div class="fg2"><label>Phone Number *</label><input type="tel" id="f-phone" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="fg2"><label>Gender</label><select id="f-gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+      </div>
+      <div class="f-row one" id="addr-row" style="display:none;">
+        <div class="fg2"><label>Home Address *</label><textarea id="f-addr" placeholder="Full address for home visit" style="height:70px;"></textarea></div>
+      </div>
+      <div class="div-label">Date & Time Slot</div>
+      <div class="f-row">
+        <div class="fg2"><label>Preferred Date *</label><input type="date" id="f-date"></div>
+        <div class="fg2"><label>Doctor / Staff</label><select id="f-doc"><option value="">Any Available</option></select></div>
+      </div>
+      <div class="fg2" style="margin-bottom:16px;">
+        <label>Available Time Slots</label>
+        <div class="slot-grid" id="slot-grid"></div>
+      </div>
+      <div class="f-row one">
+        <div class="fg2"><label>Notes / Symptoms (optional)</label><textarea id="f-notes" placeholder="Any symptoms or special requirements..."></textarea></div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn-can" onclick="closeModal()">Cancel</button>
+      <button class="btn-proceed" id="proceed-btn" onclick="proceedToPayment()"><i class="fas fa-lock"></i> Proceed to Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="suc-ov" id="suc-ov">
+  <div class="suc-box">
+    <div class="suc-icon"><i class="fas fa-check"></i></div>
+    <h2>Booking Confirmed!</h2>
+    <p id="suc-msg">Your booking has been confirmed. Our team will contact you shortly.</p>
+    <div class="suc-ref" id="suc-ref">REF: MRH-000000</div>
+    <button class="btn-hero" style="width:100%;padding:14px;border-radius:12px;" onclick="document.getElementById('suc-ov').classList.remove('open');document.body.style.overflow=''">Done</button>
+  </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+// ═══════════════════════════════════════════════
+//  ⚠️ PASTE YOUR GOOGLE APPS SCRIPT URL BELOW
+// ═══════════════════════════════════════════════
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzY1y2blxtTjzsdQnd3G01-gQ7i9wboJjDV9kcTdTpn9hqc_3nsgy7xyeADt2AfPKuQ/exec";
+// ═══════════════════════════════════════════════
+
+let SD = {}; // Site Data — loaded from Google Sheets
+let currentBooking = {};
+
+// ── LOAD ALL DATA FROM SHEETS ─────────────────
+async function loadSiteData() {
+  if (!SCRIPT_URL || SCRIPT_URL.includes('PASTE_YOUR')) {
+    SD = getDemoData();
+    initSite();
+    return;
+  }
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=getAll');
+    const d   = await res.json();
+    if (d.success) { SD = d; initSite(); }
+    else { SD = getDemoData(); initSite(); }
+  } catch(e) { SD = getDemoData(); initSite(); }
+}
+
+function initSite() {
+  applyConfig(SD.config || {});
+  renderTestCategories();
+  renderDepts();
+  renderHomeSvcs();
+  renderDoctors();
+  populateSlots();
+  setMinDate();
+  initScrollReveal();
+}
+
+// ── CONFIG ────────────────────────────────────
+function applyConfig(c) {
+  const g = (k,d) => c[k] || d || '';
+  document.getElementById('tb-ph').textContent   = g('phone','+91-XXXXXXXXXX');
+  document.getElementById('tb-emg').textContent  = g('emergency','+91-XXXXXXXXXX');
+  document.getElementById('tb-addr').textContent = (g('address','Ambikapur')).split(',').slice(-2).join(',').trim();
+  document.getElementById('nav-name').textContent= g('hospital_name','Mata Rajrani').split(' ').slice(0,2).join(' ');
+  document.getElementById('h-yr').textContent    = g('established','2005');
+  document.getElementById('h-tag').textContent   = g('tagline','Advanced Healing.');
+  document.getElementById('emg-btn').textContent = '🚨 Emergency: ' + g('emergency','');
+  document.getElementById('emg-btn').href        = 'tel:' + g('emergency','').replace(/[^+\d]/g,'');
+  document.getElementById('ct-addr').textContent = g('address','');
+  document.getElementById('ct-ph').textContent   = g('phone','');
+  document.getElementById('ct-emg').textContent  = g('emergency','');
+  document.getElementById('ct-opd').textContent  = g('opd_hours','Mon – Sat, 9:00 AM – 5:00 PM');
+  document.getElementById('ft-name').textContent = g('hospital_name','Mata Rajrani').split(' ').slice(0,2).join(' ');
+  document.getElementById('ft-full').textContent = g('hospital_name','Mata Rajrani Memorial Hospital');
+  document.getElementById('ft-addr').innerHTML   = g('address','') + '<br>Providing compassionate, quality healthcare to every family.';
+  document.getElementById('ft-ph').textContent   = g('phone','');
+  document.getElementById('ft-emg').textContent  = g('emergency','');
+  document.getElementById('ft-fb').href = g('facebook','#');
+  document.getElementById('ft-ig').href = g('instagram','#');
+  if(g('map_embed_url')) document.getElementById('ct-map').src = g('map_embed_url');
+}
+
+// ── TEST CATEGORIES ───────────────────────────
+const CAT_ICONS = { radiology:'fas fa-x-ray', blood_tests:'fas fa-tint', cardiac:'fas fa-heart', womens_health:'fas fa-female' };
+const CAT_NAMES = { radiology:'Radiology', blood_tests:'Blood Tests', cardiac:'Cardiac Tests', womens_health:"Women's Health" };
+
+function renderTestCategories() {
+  const tests = SD.tests || [];
+  const cats  = [...new Set(tests.map(t => t.category))];
+  document.getElementById('test-cats').innerHTML = `
+    <div class="cat-grid">
+      ${cats.map(c => `
+        <div class="cat-card" onclick="showTestList('${c}')">
+          <div class="cat-icon"><i class="${CAT_ICONS[c]||'fas fa-flask'}"></i></div>
+          <h3>${CAT_NAMES[c]||c}</h3>
+          <p>${tests.filter(t=>t.category===c).length} tests available</p>
+        </div>`).join('')}
+    </div>`;
+}
+
+function showTestList(cat) {
+  const tests = (SD.tests||[]).filter(t=>t.category===cat);
+  document.getElementById('test-cats').style.display='none';
+  document.getElementById('test-list').style.display='block';
+  document.getElementById('test-list').innerHTML = `
+    <div class="test-list-wrap">
+      <div class="list-header">
+        <button class="back-btn" onclick="showTestCats()"><i class="fas fa-arrow-left"></i> Back</button>
+        <h3>${CAT_NAMES[cat]||cat}</h3>
+      </div>
+      <div class="tests-grid">
+        ${tests.map(t => `
+          <div class="test-card">
+            <div class="tc-top"><h4>${t.name}</h4><span class="price-tag">₹${parseFloat(t.price||0).toLocaleString('en-IN')}</span></div>
+            ${t.duration?`<div class="tc-meta"><i class="fas fa-clock"></i> ${t.duration}</div>`:''}
+            <div class="tc-desc">${t.description||''}</div>
+            ${t.preparation?`<div class="tc-prep"><i class="fas fa-info-circle"></i> ${t.preparation}</div>`:''}
+            <button class="sel-btn" onclick='openModal("test","${t.id}",null)'>Select & Book</button>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function showTestCats() {
+  document.getElementById('test-cats').style.display='block';
+  document.getElementById('test-list').style.display='none';
+}
+
+// ── DEPARTMENTS ───────────────────────────────
+function renderDepts() {
+  const depts = SD.departments || [];
+  document.getElementById('dept-grid').innerHTML = depts.map(d => `
+    <div class="dept-card" onclick='openModal("appt","${d.id}",null)'>
+      <div class="dept-icon"><i class="${d.icon||'fas fa-stethoscope'}"></i></div>
+      <div class="dept-info">
+        <h4>${d.name}</h4>
+        <p>${d.description||''}</p>
+        <div class="dept-fee">₹${parseFloat(d.consultationFee||0).toLocaleString('en-IN')} Consultation</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── HOME SERVICES ─────────────────────────────
+function renderHomeSvcs() {
+  const svcs = SD.homeServices || [];
+  document.getElementById('home-grid').innerHTML = svcs.map(s => `
+    <div class="home-card">
+      <div class="hc-head">
+        <div class="hc-icon"><i class="${s.icon||'fas fa-home'}"></i></div>
+        <div><h3>${s.name}</h3><div class="hc-avail"><i class="fas fa-clock" style="margin-right:4px;"></i>${s.availability||''}</div></div>
+      </div>
+      <p>${s.description||''}</p>
+      <div class="hc-price">Starting from ₹${parseFloat(s.price||0).toLocaleString('en-IN')}</div>
+      <button class="hc-book-btn" onclick='openModal("home","${s.id}",null)'>Book Now</button>
+    </div>`).join('');
+}
+
+// ── DOCTORS ───────────────────────────────────
+function renderDoctors() {
+  const docs = SD.doctors || [];
+  document.getElementById('doctors-grid').innerHTML = docs.map(d => `
+    <div class="doc-card">
+      ${d.imageUrl
+        ? `<img class="doc-photo" src="${d.imageUrl}" alt="${d.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="doc-photo-placeholder" style="display:none;"><i class="fas fa-user-md"></i></div>`
+        : `<div class="doc-photo-placeholder"><i class="fas fa-user-md"></i></div>`}
+      <div class="doc-body">
+        <h3>${d.name}</h3>
+        <span class="spec-badge">${d.specialty}</span>
+        <p class="exp">${d.experience}+ years experience</p>
+        <p class="desc">${d.description||''}</p>
+      </div>
+    </div>`).join('');
+}
+
+// ── BOOKING MODAL ────────────────────────────
+function openModal(type, id, catId) {
+  let item, price, name, meta, doctors = [];
+
+  if(type === 'test') {
+    item = (SD.tests||[]).find(t => t.id === id);
+    if(!item) return;
+    price = parseFloat(item.price||0); name = item.name;
+    meta  = `<i class="fas fa-clock"></i> ${item.duration||''}`;
+    if(item.preparation) meta += ` &nbsp;|&nbsp; <i class="fas fa-info-circle"></i> ${item.preparation}`;
+  } else if(type === 'appt') {
+    item = (SD.departments||[]).find(d => d.id === id);
+    if(!item) return;
+    price = parseFloat(item.consultationFee||0); name = item.name + ' Consultation';
+    doctors = Array.isArray(item.doctors) ? item.doctors : (item.doctors||'').split(',').map(d=>d.trim()).filter(Boolean);
+    meta  = `<i class="fas fa-user-md"></i> ${doctors.join(', ')||'Any available doctor'}`;
+  } else if(type === 'home') {
+    item = (SD.homeServices||[]).find(s => s.id === id);
+    if(!item) return;
+    price = parseFloat(item.price||0); name = item.name;
+    meta  = `<i class="fas fa-home"></i> Home Visit &nbsp;|&nbsp; <i class="fas fa-clock"></i> ${item.duration||''}`;
+  }
+
+  currentBooking = { type, id, price, name };
+
+  document.getElementById('m-name').textContent    = name;
+  document.getElementById('m-price').textContent   = '₹' + price.toLocaleString('en-IN');
+  document.getElementById('m-meta').innerHTML      = meta || '';
+  document.getElementById('addr-row').style.display= type==='home' ? 'block' : 'none';
+
+  const titles = { test:'Book a Lab / Radiology Test', appt:'Book Doctor Appointment', home:'Book Home Service' };
+  document.getElementById('m-title').textContent   = titles[type];
+
+  const docSel = document.getElementById('f-doc');
+  docSel.innerHTML = '<option value="">Any Available</option>';
+  doctors.filter(Boolean).forEach(d => { const o=document.createElement('option'); o.value=d; o.textContent=d; docSel.appendChild(o); });
+
+  document.getElementById('bk-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('bk-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── SLOTS ─────────────────────────────────────
+function populateSlots() {
+  const slots = SD.timeSlots || ["09:00 AM","10:00 AM","11:00 AM","12:00 PM","02:00 PM","03:00 PM","04:00 PM"];
+  document.getElementById('slot-grid').innerHTML = slots.map(s =>
+    `<button class="slot-btn" onclick="pickSlot(this,'${s}')">${s}</button>`).join('');
+}
+
+function pickSlot(el, slot) {
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function setMinDate() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f-date').min   = today;
+  document.getElementById('f-date').value = today;
+}
+
+// ── PAYMENT ───────────────────────────────────
+async function proceedToPayment() {
+  const name   = document.getElementById('f-name').value.trim();
+  const age    = document.getElementById('f-age').value.trim();
+  const phone  = document.getElementById('f-phone').value.trim();
+  const gender = document.getElementById('f-gender').value;
+  const date   = document.getElementById('f-date').value;
+  const doctor = document.getElementById('f-doc').value;
+  const notes  = document.getElementById('f-notes').value.trim();
+  const addr   = document.getElementById('f-addr').value.trim();
+  const slot   = document.querySelector('.slot-btn.on')?.textContent;
+
+  if(!name||!age||!phone) { alert('Please fill in Patient Name, Age and Phone.'); return; }
+  if(!date)  { alert('Please select a date.'); return; }
+  if(!slot)  { alert('Please select a time slot.'); return; }
+  if(currentBooking.type==='home'&&!addr) { alert('Please enter your home address.'); return; }
+
+  const bookingData = {
+    bookingType  : currentBooking.type==='test' ? 'Test' : currentBooking.type==='appt' ? 'Appointment' : 'Home Service',
+    patientName  : name, patientAge: age, patientPhone: phone, patientGender: gender,
+    serviceName  : currentBooking.name, price: currentBooking.price,
+    preferredDate: date, timeSlot: slot, doctor, address: addr, notes, paymentId: ''
+  };
+
+  const cfg   = SD.config || {};
+  const rpKey = cfg.razorpay_key || '';
+  const isDemo= !rpKey || rpKey.includes('YourKey') || !SCRIPT_URL.includes('script.google');
+
+  const btn = document.getElementById('proceed-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+  if(isDemo) {
+    await saveBooking(bookingData, 'DEMO-' + Date.now());
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-lock"></i> Proceed to Payment';
+    return;
+  }
+
+  // Real Razorpay
+  const options = {
+    key        : rpKey,
+    amount     : currentBooking.price * 100,
+    currency   : 'INR',
+    name       : cfg.razorpay_company || 'Mata Rajrani Memorial Hospital',
+    description: currentBooking.name,
+    handler    : async function(resp) {
+      bookingData.paymentId = resp.razorpay_payment_id;
+      await saveBooking(bookingData, resp.razorpay_payment_id);
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-lock"></i> Proceed to Payment';
+    },
+    prefill    : { name, contact: phone },
+    theme      : { color: cfg.razorpay_color || '#14b8a6' },
+    modal      : { ondismiss: () => { btn.disabled=false; btn.innerHTML='<i class="fas fa-lock"></i> Proceed to Payment'; } }
+  };
+  try { new Razorpay(options).open(); }
+  catch(e) { await saveBooking(bookingData, 'FAILED'); btn.disabled=false; btn.innerHTML='<i class="fas fa-lock"></i> Proceed to Payment'; }
+}
+
+async function saveBooking(data, paymentId) {
+  data.paymentId = paymentId;
+  let refId = 'MRH-' + Math.floor(100000 + Math.random()*900000);
+  if(SCRIPT_URL && !SCRIPT_URL.includes('PASTE_YOUR')) {
+    try {
+      const r = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'saveBooking', data }) });
+      const d = await r.json();
+      if(d.refId) refId = d.refId;
+    } catch(e) {}
+  }
+  closeModal();
+  document.getElementById('suc-ref').textContent = 'REF: ' + refId;
+  document.getElementById('suc-msg').textContent = `Booking confirmed for ${data.patientName} on ${data.preferredDate} at ${data.timeSlot}. Our team will contact you on ${data.patientPhone}.`;
+  document.getElementById('suc-ov').classList.add('open');
+  document.body.style.overflow = '';
+}
+
+// ── TABS ──────────────────────────────────────
+function switchTab(tab, el) {
+  document.querySelectorAll('.book-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.book-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+// ── SCROLL REVEAL ─────────────────────────────
+function initScrollReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal,.stagger').forEach(el => obs.observe(el));
+}
+
+document.getElementById('bk-modal').addEventListener('click', e => { if(e.target===document.getElementById('bk-modal')) closeModal(); });
+window.addEventListener('scroll', () => { document.getElementById('navbar').style.boxShadow = window.scrollY>10?'0 4px 30px rgba(0,0,0,0.12)':'0 2px 20px rgba(0,0,0,0.08)'; });
+
+// ── DEMO DATA (used before Sheets connected) ──
+function getDemoData() {
+  return {
+    config: { hospital_name:'Mata Rajrani Memorial Hospital', tagline:'Compassionate Care, Advanced Healing.', phone:'+91-9876543210', emergency:'+91-9876543211', address:'Joda Talab, Ambikapur, Chhattisgarh, India', established:'2005', opd_hours:'Mon – Sat, 9:00 AM – 5:00 PM', facebook:'#', instagram:'#', map_embed_url:'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d58920.43!2d83.18!3d23.12!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3987fbc5b4ab2b4d%3A0x9ce77c27c9e9e59!2sAmbikapur%2C%20Chhattisgarh!5e0!3m2!1sen!2sin!4v1', razorpay_key:'', razorpay_color:'#14b8a6', razorpay_company:'Mata Rajrani Memorial Hospital' },
+    tests: [
+      {id:'mri_brain',category:'radiology',name:'MRI Brain',price:3500,duration:'45 min',preparation:'No metal objects.',description:'Brain imaging for tumors, strokes, abnormalities.'},
+      {id:'mri_spine',category:'radiology',name:'MRI Spine',price:4000,duration:'45 min',preparation:'No metal objects.',description:'Assessment of disc herniation and spinal cord.'},
+      {id:'ct_chest',category:'radiology',name:'CT Scan Chest',price:2800,duration:'20 min',preparation:'Remove all metal jewellery.',description:'Cross-sectional imaging of lungs and chest.'},
+      {id:'xray_chest',category:'radiology',name:'X-Ray Chest',price:300,duration:'10 min',preparation:'Remove metal from chest.',description:'Standard chest radiograph.'},
+      {id:'cbc',category:'blood_tests',name:'Complete Blood Count (CBC)',price:200,duration:'Same day',preparation:'No fasting required.',description:'Measures RBC, WBC, platelets, haemoglobin.'},
+      {id:'lft',category:'blood_tests',name:'Liver Function Test',price:500,duration:'Same day',preparation:'Fast for 8 hours.',description:'Evaluates liver health.'},
+      {id:'tsh',category:'blood_tests',name:'Thyroid Profile (TSH)',price:600,duration:'Same day',preparation:'Early morning fasting preferred.',description:'Comprehensive thyroid hormone assessment.'},
+      {id:'ecg',category:'cardiac',name:'ECG (12 Lead)',price:200,duration:'10 min',preparation:'Rest 5 min before test.',description:'Records heart electrical activity.'},
+      {id:'echo',category:'cardiac',name:'2D Echocardiography',price:1800,duration:'30 min',preparation:'No special preparation.',description:'Ultrasound assessment of heart chambers.'},
+      {id:'pap',category:'womens_health',name:'Pap Smear',price:600,duration:'Same day',preparation:'Avoid intercourse 48 hrs before.',description:'Cervical cancer screening test.'},
+    ],
+    doctors: [
+      {id:'doc_1',name:'Dr. A. Sharma',specialty:'Orthopedics',experience:'15+',description:'Specialist in joint replacement and trauma surgery.',imageUrl:''},
+      {id:'doc_2',name:'Dr. B. Singh',specialty:'Gynecology',experience:'12+',description:'Expert in high-risk pregnancies and laparoscopic surgeries.',imageUrl:''},
+      {id:'doc_3',name:'Dr. M. Kapoor',specialty:'Cardiology',experience:'18+',description:'Preventive cardiology and echocardiography specialist.',imageUrl:''},
+      {id:'doc_4',name:'Dr. P. Gupta',specialty:'Pediatrics',experience:'10+',description:'Child health, immunization, and developmental care.',imageUrl:''},
+      {id:'doc_5',name:'Dr. R. Verma',specialty:'General Medicine',experience:'20+',description:'Diabetes, hypertension, and internal medicine expert.',imageUrl:''},
+      {id:'doc_6',name:'Dr. K. Das',specialty:'ENT',experience:'8+',description:'Ear, nose and throat surgeries and hearing disorders.',imageUrl:''},
+    ],
+    departments: [
+      {id:'general',name:'General Medicine',icon:'fas fa-stethoscope',consultationFee:300,doctors:['Dr. R. Verma'],description:'Primary care, chronic disease, fever, diabetes.'},
+      {id:'pediatrics',name:'Pediatrics',icon:'fas fa-baby',consultationFee:350,doctors:['Dr. P. Gupta'],description:'Child health from newborn to adolescent.'},
+      {id:'orthopedics',name:'Orthopedics',icon:'fas fa-bone',consultationFee:400,doctors:['Dr. A. Sharma'],description:'Fractures, joint pain, spine problems.'},
+      {id:'gynecology',name:'Gynecology',icon:'fas fa-heartbeat',consultationFee:400,doctors:['Dr. B. Singh'],description:'Prenatal care, deliveries, laparoscopy.'},
+      {id:'cardiology',name:'Cardiology',icon:'fas fa-heart',consultationFee:500,doctors:['Dr. M. Kapoor'],description:'Heart conditions, ECG interpretation.'},
+      {id:'ent',name:'ENT',icon:'fas fa-deaf',consultationFee:350,doctors:['Dr. K. Das'],description:'Ear, nose and throat disorders.'},
+    ],
+    homeServices: [
+      {id:'blood_home',name:'Home Blood Collection',icon:'fas fa-tint',price:100,description:'Certified phlebotomist visits home to collect samples.',availability:'7 AM – 11 AM',duration:'30 min'},
+      {id:'nursing_home',name:'Home Nursing Care',icon:'fas fa-user-nurse',price:500,description:'Professional nursing including dressings, injections.',availability:'24/7 On Request',duration:'Per visit'},
+      {id:'physio_home',name:'Home Physiotherapy',icon:'fas fa-walking',price:600,description:'Certified physiotherapist for rehabilitation.',availability:'8 AM – 6 PM',duration:'45 min'},
+      {id:'doctor_home',name:'Doctor Home Visit',icon:'fas fa-user-md',price:800,description:'Qualified doctor visits for consultation.',availability:'10 AM – 6 PM',duration:'30 min'},
+    ],
+    timeSlots: ["09:00 AM","09:30 AM","10:00 AM","10:30 AM","11:00 AM","11:30 AM","12:00 PM","02:00 PM","02:30 PM","03:00 PM","04:00 PM"]
+  };
+}
+
+// START
+loadSiteData();
+</script>
+</body>
+</html>

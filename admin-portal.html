@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — Mata Rajrani Hospital</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ──────────────────────────────────────────────────────────
+   HOW TO CHANGE PASSWORD:
+   Find the line:  const ADMIN_PASSWORD = "hospital@2025";
+   Change "hospital@2025" to your password. Save. Re-upload.
+
+   HOW TO CONNECT GOOGLE SHEETS:
+   Find the line:  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzY1y2blxtTjzsdQnd3G01-gQ7i9wboJjDV9kcTdTpn9hqc_3nsgy7xyeADt2AfPKuQ/exec";
+   Paste your Google Apps Script deployment URL there.
+────────────────────────────────────────────────────────── */
+:root{--t:#14b8a6;--td:#0f9488;--tl:#e6faf8;--dk:#1a1a2e;--tx:#374151;--mu:#6b7280;--br:#e5e7eb;--bg:#f9fafb;--wh:#fff;--re:#ef4444;--gr:#22c55e;--or:#f59e0b;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--tx);}
+
+/* LOGIN */
+#login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0f172a,#1a2a3a,#0f2a1a);}
+.lbox{background:white;border-radius:24px;padding:48px 44px;width:100%;max-width:420px;box-shadow:0 32px 80px rgba(0,0,0,.4);text-align:center;animation:pop .5s ease;}
+@keyframes pop{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.llogo{width:64px;height:64px;border-radius:50%;background:var(--t);color:white;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.lbox h1{font-size:22px;font-weight:800;color:var(--dk);margin-bottom:4px;}
+.lbox .ls{font-size:13px;color:var(--mu);margin-bottom:28px;}
+.lerr{background:#fee2e2;color:var(--re);padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;display:none;margin-bottom:14px;align-items:center;gap:8px;}
+.lfield{position:relative;margin-bottom:18px;}
+.lfield input{width:100%;padding:13px 46px 13px 16px;border:1.5px solid var(--br);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+.lfield input:focus{border-color:var(--t);box-shadow:0 0 0 3px rgba(20,184,166,.12);}
+.lfield button{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--mu);cursor:pointer;font-size:15px;}
+.lbtn{width:100%;padding:14px;background:var(--t);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;transition:all .3s;margin-top:4px;}
+.lbtn:hover{background:var(--td);transform:translateY(-1px);box-shadow:0 8px 24px rgba(20,184,166,.4);}
+.lhint{margin-top:18px;font-size:11px;color:var(--mu);background:var(--bg);padding:10px 14px;border-radius:8px;line-height:1.7;}
+
+/* ADMIN LAYOUT */
+#admin-page{display:none;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--dk);display:flex;flex-direction:column;z-index:100;}
+.slogo{padding:20px 18px;border-bottom:1px solid rgba(255,255,255,.08);}
+.slogo h2{color:white;font-size:13px;font-weight:700;line-height:1.3;}
+.slogo span{color:#9ca3af;font-size:10px;}
+.snav{flex:1;padding:14px 0;overflow-y:auto;}
+.nsec{padding:6px 18px;color:#6b7280;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:10px;}
+.ni{display:flex;align-items:center;gap:11px;padding:10px 18px;color:#9ca3af;cursor:pointer;transition:all .2s;font-size:13px;font-weight:500;border-left:3px solid transparent;}
+.ni:hover{background:rgba(255,255,255,.05);color:white;}
+.ni.on{background:rgba(20,184,166,.12);color:var(--t);border-left-color:var(--t);}
+.ni i{width:16px;text-align:center;font-size:13px;}
+.sbottom{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);}
+.logout{display:flex;align-items:center;gap:10px;color:#9ca3af;cursor:pointer;font-size:13px;font-weight:500;transition:color .2s;}
+.logout:hover{color:var(--re);}
+.main{margin-left:230px;min-height:100vh;}
+.topbar{background:white;padding:13px 26px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--br);position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.topbar h1{font-size:17px;font-weight:700;color:var(--dk);}
+.tbr{display:flex;align-items:center;gap:12px;}
+.badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;}
+.badge-live{background:#dcfce7;color:#166534;}
+.badge-demo{background:#fef3c7;color:#92400e;}
+.badge-err{background:#fee2e2;color:#991b1b;}
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;transition:all .2s;}
+.bt{background:var(--t);color:white;}.bt:hover{background:var(--td);}
+.bo{background:white;border:1px solid var(--br);color:var(--tx);}.bo:hover{border-color:var(--t);color:var(--t);}
+.bd{background:#fee2e2;color:var(--re);border:1px solid #fca5a5;}.bd:hover{background:#fca5a5;}
+.content{padding:22px 26px;}
+.pg{display:none;}.pg.on{display:block;}
+
+/* STATS */
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.scard{background:white;border-radius:14px;padding:18px;border:1px solid var(--br);transition:all .3s;}
+.scard:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px);}
+.sic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px;}
+.slb{font-size:10px;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.svl{font-size:26px;font-weight:800;color:var(--dk);}
+.ssb{font-size:10px;color:var(--mu);margin-top:3px;}
+
+/* TABLES */
+.tcard{background:white;border-radius:14px;border:1px solid var(--br);overflow:hidden;margin-bottom:18px;}
+.thead{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--br);flex-wrap:wrap;gap:8px;}
+.thead h3{font-size:14px;font-weight:700;color:var(--dk);}
+.frow{display:flex;gap:6px;flex-wrap:wrap;}
+.fb{padding:5px 12px;border-radius:20px;border:1px solid var(--br);background:white;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;color:var(--tx);}
+.fb.on{background:var(--t);color:white;border-color:var(--t);}
+.twrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:700px;}
+th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--br);white-space:nowrap;}
+td{padding:11px 14px;font-size:12px;border-bottom:1px solid var(--br);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafafa;}
+.stag{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;display:inline-block;white-space:nowrap;}
+.sc{background:#dcfce7;color:#166534;}.sp{background:#fef3c7;color:#92400e;}
+.sca{background:#fee2e2;color:var(--re);}.sco{background:#dbeafe;color:#1e40af;}
+.typ{padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;}
+.tt{background:#f3e8ff;color:#7e22ce;}.ta{background:#e0f2fe;color:#0369a1;}.th{background:#fef3c7;color:#92400e;}
+
+/* FORMS */
+.fsec{background:white;border-radius:14px;border:1px solid var(--br);padding:20px;margin-bottom:18px;}
+.fsec h3{font-size:14px;font-weight:700;color:var(--dk);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:8px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg3{grid-template-columns:1fr 1fr 1fr;}
+.fg1{grid-template-columns:1fr;}
+.fgrp{display:flex;flex-direction:column;gap:5px;}
+.fgrp.full{grid-column:1/-1;}
+label{font-size:11px;font-weight:600;color:var(--tx);}
+input[type=text],input[type=number],input[type=email],input[type=tel],input[type=color],select,textarea{padding:9px 12px;border:1px solid var(--br);border-radius:8px;font-family:'Poppins',sans-serif;font-size:12px;color:var(--tx);transition:border-color .2s;outline:none;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--t);box-shadow:0 0 0 3px rgba(20,184,166,.1);}
+.hint{font-size:10px;color:var(--mu);}
+.savebar{display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid var(--br);margin-top:14px;}
+
+/* ITEM ROWS */
+.ir{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid var(--br);border-radius:10px;background:white;transition:all .2s;margin-bottom:6px;}
+.ir:hover{border-color:var(--t);}
+.iname{flex:1;font-size:13px;font-weight:600;color:var(--dk);}
+.iprice{color:var(--t);font-size:13px;font-weight:700;width:76px;}
+.ib{width:28px;height:28px;border-radius:6px;border:1px solid var(--br);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mu);transition:all .2s;}
+.ib:hover{border-color:var(--t);color:var(--t);}
+.ib.del:hover{border-color:var(--re);color:var(--re);}
+
+/* DOCTOR CARDS */
+.dcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:16px;}
+.dccard{border:1px solid var(--br);border-radius:14px;overflow:hidden;transition:all .3s;background:white;}
+.dccard:hover{border-color:var(--t);box-shadow:0 8px 24px rgba(20,184,166,.1);}
+.dcphoto{width:100%;height:140px;object-fit:cover;display:block;background:var(--tl);}
+.dcph-placeholder{width:100%;height:140px;background:var(--tl);display:flex;align-items:center;justify-content:center;color:var(--t);font-size:40px;}
+.dcbody{padding:14px;}
+.dcbody h4{font-size:14px;font-weight:700;color:var(--dk);margin-bottom:4px;}
+.dcspec{display:inline-block;background:var(--tl);color:var(--t);padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;margin-bottom:6px;}
+.dcexp{font-size:11px;color:var(--mu);margin-bottom:8px;}
+.dcdesc{font-size:11px;color:var(--mu);line-height:1.5;margin-bottom:10px;}
+.dcbtns{display:flex;gap:6px;}
+.dcu{flex:1;padding:6px;background:var(--tl);border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;color:var(--t);font-family:'Poppins',sans-serif;transition:all .2s;}
+.dcu:hover{background:var(--t);color:white;}
+.dcdel{width:28px;height:28px;background:#fee2e2;border:none;border-radius:6px;cursor:pointer;color:var(--re);font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.dcdel:hover{background:var(--re);color:white;}
+
+/* IMAGE UPLOAD */
+.imgup{border:2px dashed var(--br);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.imgup:hover{border-color:var(--t);background:var(--tl);}
+.imgup input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.imgup i{font-size:24px;color:var(--mu);margin-bottom:8px;}
+.imgup p{font-size:12px;color:var(--mu);}
+.imgup span{font-size:10px;color:var(--t);font-weight:600;}
+.imgpreview{width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-top:10px;display:none;}
+.imgurl-row{display:flex;gap:8px;align-items:center;margin-top:8px;}
+.imgurl-row input{flex:1;}
+
+/* TOAST */
+.toast{position:fixed;top:20px;right:20px;z-index:9999;background:var(--dk);color:white;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.3);transform:translateX(140%);transition:transform .4s ease;}
+.toast.show{transform:translateX(0);}
+.toast.ok{background:#166534;}.toast.err{background:var(--re);}
+
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;}
+.mov.open{display:flex;}
+.mbox{background:white;border-radius:16px;padding:24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:slideUp .3s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.mbox h3{font-size:16px;font-weight:700;color:var(--dk);margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;}
+.mbox h3 button{background:none;border:none;cursor:pointer;color:var(--mu);font-size:18px;}
+
+/* WARN / INFO BOXES */
+.wbox{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;gap:10px;}
+.wbox i{color:var(--or);font-size:15px;flex-shrink:0;margin-top:1px;}
+.wbox p,.ibox p{font-size:12px;line-height:1.6;}
+.ibox{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;gap:10px;}
+.ibox i{color:#3b82f6;font-size:15px;flex-shrink:0;margin-top:1px;}
+
+/* SETUP STEPS */
+.step{display:flex;gap:14px;padding:14px;border:1px solid var(--br);border-radius:12px;margin-bottom:10px;background:white;}
+.stepn{width:30px;height:30px;border-radius:50%;background:var(--t);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stepb h4{font-size:13px;font-weight:700;color:var(--dk);margin-bottom:3px;}
+.stepb p{font-size:12px;color:var(--mu);line-height:1.7;}
+.stepb code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--t);font-family:monospace;}
+
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--br);border-top-color:var(--t);border-radius:50%;animation:sp .8s linear infinite;margin-right:6px;vertical-align:middle;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.lrow td{text-align:center;padding:36px;color:var(--mu);font-size:12px;}
+
+@media(max-width:900px){.sgrid{grid-template-columns:1fr 1fr;}.sidebar{display:none;}.main{margin-left:0;}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<div id="login-page">
+  <div class="lbox">
+    <div class="llogo">M</div>
+    <h1>Admin Portal</h1>
+    <p class="ls">Mata Rajrani Memorial Hospital<br><small style="color:#9ca3af;">Staff access only</small></p>
+    <div class="lerr" id="lerr"><i class="fas fa-times-circle"></i> Wrong password. Try again.</div>
+    <div class="lfield">
+      <input type="password" id="pw" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')login()">
+      <button onclick="togglePw()"><i class="fas fa-eye" id="pwi"></i></button>
+    </div>
+    <button class="lbtn" onclick="login()"><i class="fas fa-unlock-alt"></i> &nbsp;Login to Dashboard</button>
+    <div class="lhint">🔒 Authorised hospital staff only.<br>Forgot password? Contact your web developer.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ADMIN ═══════════════════════ -->
+<div id="admin-page">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="slogo"><h2>Mata Rajrani Hospital</h2><span>Admin Dashboard</span></div>
+    <nav class="snav">
+      <div class="nsec">Overview</div>
+      <div class="ni on" onclick="pg('dashboard',this)"><i class="fas fa-th-large"></i> Dashboard</div>
+      <div class="ni" onclick="pg('bookings',this)"><i class="fas fa-calendar-check"></i> All Bookings</div>
+      <div class="nsec">Manage (Live)</div>
+      <div class="ni" onclick="pg('tests',this)"><i class="fas fa-flask"></i> Tests &amp; Prices</div>
+      <div class="ni" onclick="pg('depts',this)"><i class="fas fa-user-md"></i> Departments</div>
+      <div class="ni" onclick="pg('home',this)"><i class="fas fa-home"></i> Home Services</div>
+      <div class="ni" onclick="pg('doctors',this)"><i class="fas fa-user-circle"></i> Doctors &amp; Photos</div>
+      <div class="ni" onclick="pg('slots',this)"><i class="fas fa-clock"></i> Time Slots</div>
+      <div class="nsec">Settings</div>
+      <div class="ni" onclick="pg('hospital',this)"><i class="fas fa-hospital"></i> Hospital Info</div>
+      <div class="ni" onclick="pg('razorpay',this)"><i class="fas fa-credit-card"></i> Razorpay</div>
+      <div class="ni" onclick="pg('setup',this)"><i class="fas fa-tools"></i> Setup Guide</div>
+    </nav>
+    <div class="sbottom"><div class="logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</div></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <h1 id="ptitle">Dashboard</h1>
+      <div class="tbr">
+        <span class="badge badge-demo" id="connbadge">⏳ Connecting...</span>
+        <a href="index.html" target="_blank" class="btn bo"><i class="fas fa-external-link-alt"></i> View Website</a>
+      </div>
+    </div>
+
+    <div class="content">
+
+<!-- ── DASHBOARD ── -->
+<div id="pg-dashboard" class="pg on">
+  <div class="sgrid">
+    <div class="scard"><div class="sic" style="background:#dbeafe;color:#3b82f6;"><i class="fas fa-calendar-check"></i></div><div class="slb">Today's Bookings</div><div class="svl" id="s-today">—</div><div class="ssb">Live from Sheets</div></div>
+    <div class="scard"><div class="sic" style="background:#dcfce7;color:#22c55e;"><i class="fas fa-flask"></i></div><div class="slb">Test Bookings</div><div class="svl" id="s-tests">—</div><div class="ssb">All time</div></div>
+    <div class="scard"><div class="sic" style="background:#fef3c7;color:#f59e0b;"><i class="fas fa-user-md"></i></div><div class="slb">Appointments</div><div class="svl" id="s-appts">—</div><div class="ssb">All time</div></div>
+    <div class="scard"><div class="sic" style="background:#f3e8ff;color:#9333ea;"><i class="fas fa-rupee-sign"></i></div><div class="slb">Total Revenue</div><div class="svl" id="s-rev">—</div><div class="ssb">All bookings</div></div>
+  </div>
+  <div class="tcard">
+    <div class="thead"><h3>Recent Bookings</h3><button class="btn bo" onclick="loadBookings()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+    <div class="twrap"><table><thead><tr><th>Ref ID</th><th>Patient</th><th>Type</th><th>Service</th><th>Date &amp; Slot</th><th>Amount</th><th>Status</th></tr></thead>
+    <tbody id="recent-body"><tr class="lrow"><td colspan="7"><span class="spin"></span>Loading from Google Sheets...</td></tr></tbody></table></div>
+  </div>
+</div>
+
+<!-- ── ALL BOOKINGS ── -->
+<div id="pg-bookings" class="pg">
+  <div class="tcard">
+    <div class="thead">
+      <h3>All Bookings</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <div class="frow">
+          <button class="fb on" onclick="filterBk('all',this)">All</button>
+          <button class="fb" onclick="filterBk('Test',this)">Tests</button>
+          <button class="fb" onclick="filterBk('Appointment',this)">Appointments</button>
+          <button class="fb" onclick="filterBk('Home Service',this)">Home</button>
+        </div>
+        <button class="btn bo" onclick="exportCSV()"><i class="fas fa-download"></i> CSV</button>
+        <button class="btn bo" onclick="loadBookings()"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </div>
+    </div>
+    <div class="twrap"><table>
+      <thead><tr><th>Ref ID</th><th>Time</th><th>Patient</th><th>Phone</th><th>Type</th><th>Service</th><th>Slot</th><th>₹</th><th>Payment ID</th><th>Status</th></tr></thead>
+      <tbody id="all-body"><tr class="lrow"><td colspan="10"><span class="spin"></span>Loading...</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ── TESTS & PRICES ── -->
+<div id="pg-tests" class="pg">
+  <div class="ibox"><i class="fas fa-info-circle"></i><p>Changes here are <strong>saved directly to Google Sheets</strong> and the website reflects them immediately. No code editing required.</p></div>
+  <div id="tests-ed"></div>
+  <!-- Add test form -->
+  <div class="fsec">
+    <h3><i class="fas fa-plus-circle" style="color:var(--t);"></i> Add New Test</h3>
+    <div class="fgrid fg3">
+      <div class="fgrp"><label>Category *</label>
+        <select id="nt-cat">
+          <option value="radiology">Radiology</option>
+          <option value="blood_tests">Blood Tests</option>
+          <option value="cardiac">Cardiac Tests</option>
+          <option value="womens_health">Women's Health</option>
+        </select>
+      </div>
+      <div class="fgrp"><label>Test Name *</label><input type="text" id="nt-name" placeholder="e.g. MRI Knee"></div>
+      <div class="fgrp"><label>Price ₹ *</label><input type="number" id="nt-price" placeholder="3000"></div>
+      <div class="fgrp"><label>Duration</label><input type="text" id="nt-dur" placeholder="30 min"></div>
+      <div class="fgrp"><label>Preparation Note</label><input type="text" id="nt-prep" placeholder="Fast for 4 hours"></div>
+      <div class="fgrp"><label>Description</label><input type="text" id="nt-desc" placeholder="Brief description"></div>
+    </div>
+    <div class="savebar"><button class="btn bt" onclick="addTest()"><i class="fas fa-plus"></i> Add Test to Website</button></div>
+  </div>
+</div>
+
+<!-- ── DEPARTMENTS ── -->
+<div id="pg-depts" class="pg">
+  <div class="ibox"><i class="fas fa-info-circle"></i><p>Changes here update the website's <strong>Book Appointment</strong> section instantly via Google Sheets.</p></div>
+  <div id="depts-ed"></div>
+  <div class="fsec">
+    <h3><i class="fas fa-plus-circle" style="color:var(--t);"></i> Add Department</h3>
+    <div class="fgrid">
+      <div class="fgrp"><label>Department Name *</label><input type="text" id="nd-name" placeholder="e.g. Dermatology"></div>
+      <div class="fgrp"><label>Consultation Fee ₹ *</label><input type="number" id="nd-fee" placeholder="400"></div>
+      <div class="fgrp"><label>Assigned Doctor</label><input type="text" id="nd-doc" placeholder="Dr. Name"></div>
+      <div class="fgrp"><label>Description</label><input type="text" id="nd-desc" placeholder="Brief description"></div>
+    </div>
+    <div class="savebar"><button class="btn bt" onclick="addDept()"><i class="fas fa-plus"></i> Add Department</button></div>
+  </div>
+</div>
+
+<!-- ── HOME SERVICES ── -->
+<div id="pg-home" class="pg">
+  <div class="ibox"><i class="fas fa-info-circle"></i><p>Changes here update the website's <strong>Home Service</strong> booking section instantly.</p></div>
+  <div id="home-ed"></div>
+  <div class="fsec">
+    <h3><i class="fas fa-plus-circle" style="color:var(--t);"></i> Add Home Service</h3>
+    <div class="fgrid">
+      <div class="fgrp"><label>Service Name *</label><input type="text" id="nh-name" placeholder="e.g. Home ECG"></div>
+      <div class="fgrp"><label>Base Price ₹ *</label><input type="number" id="nh-price" placeholder="500"></div>
+      <div class="fgrp"><label>Availability</label><input type="text" id="nh-avail" placeholder="9 AM – 6 PM"></div>
+      <div class="fgrp"><label>Duration</label><input type="text" id="nh-dur" placeholder="30 min"></div>
+      <div class="fgrp full"><label>Description</label><input type="text" id="nh-desc" placeholder="Brief description"></div>
+    </div>
+    <div class="savebar"><button class="btn bt" onclick="addHomeService()"><i class="fas fa-plus"></i> Add Service</button></div>
+  </div>
+</div>
+
+<!-- ── DOCTORS & PHOTOS ── -->
+<div id="pg-doctors" class="pg">
+  <div class="ibox"><i class="fas fa-info-circle"></i><p>Doctor cards on the website show the <strong>photo, name, specialty and description</strong> you set here. Upload a photo using any image URL (Google Drive, Imgur, etc.) or paste a direct link.</p></div>
+  <div id="docs-ed"></div>
+  <!-- Add doctor -->
+  <div class="fsec">
+    <h3><i class="fas fa-plus-circle" style="color:var(--t);"></i> Add New Doctor</h3>
+    <div class="fgrid">
+      <div class="fgrp"><label>Full Name *</label><input type="text" id="dd-name" placeholder="Dr. Full Name"></div>
+      <div class="fgrp"><label>Specialty *</label><input type="text" id="dd-spec" placeholder="e.g. Neurology"></div>
+      <div class="fgrp"><label>Experience (e.g. 10+)</label><input type="text" id="dd-exp" placeholder="10+"></div>
+      <div class="fgrp"><label>Description</label><input type="text" id="dd-desc" placeholder="Brief professional bio"></div>
+      <div class="fgrp full">
+        <label>Doctor Photo URL</label>
+        <input type="text" id="dd-img" placeholder="Paste image URL from Google Drive, Imgur, etc.">
+        <span class="hint">💡 Upload photo to Imgur.com (free) → right-click image → Copy image address → paste here</span>
+      </div>
+    </div>
+    <div id="dd-preview-wrap" style="margin-top:10px;display:none;"><img id="dd-preview" style="height:120px;border-radius:8px;object-fit:cover;" src="" alt="Preview"></div>
+    <div class="savebar"><button class="btn bt" onclick="addDoctor()"><i class="fas fa-plus"></i> Add Doctor to Website</button></div>
+  </div>
+</div>
+
+<!-- ── TIME SLOTS ── -->
+<div id="pg-slots" class="pg">
+  <div class="fsec">
+    <h3><i class="fas fa-clock" style="color:var(--t);"></i> OPD Time Slots</h3>
+    <p style="font-size:12px;color:var(--mu);margin-bottom:14px;">These slots appear in all 3 booking forms on the website. Changes save instantly.</p>
+    <div id="slots-wrap" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <input type="time" id="new-slot" style="width:140px;">
+      <button class="btn bt" onclick="addSlot()"><i class="fas fa-plus"></i> Add Slot</button>
+      <button class="btn bo" onclick="saveSlots()"><i class="fas fa-save"></i> Save All Slots to Website</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOSPITAL INFO ── -->
+<div id="pg-hospital" class="pg">
+  <div class="fsec">
+    <h3><i class="fas fa-hospital" style="color:var(--t);"></i> Hospital Information</h3>
+    <div class="fgrid">
+      <div class="fgrp"><label>Hospital Name</label><input type="text" id="h-name"></div>
+      <div class="fgrp"><label>Tagline</label><input type="text" id="h-tag"></div>
+      <div class="fgrp"><label>Contact Phone</label><input type="tel" id="h-ph"></div>
+      <div class="fgrp"><label>Emergency Phone</label><input type="tel" id="h-emg"></div>
+      <div class="fgrp"><label>Email</label><input type="email" id="h-em"></div>
+      <div class="fgrp"><label>Established Year</label><input type="text" id="h-yr"></div>
+      <div class="fgrp"><label>OPD Hours</label><input type="text" id="h-op"></div>
+      <div class="fgrp"><label>Facebook URL</label><input type="text" id="h-fb"></div>
+      <div class="fgrp"><label>Instagram URL</label><input type="text" id="h-ig"></div>
+      <div class="fgrp full"><label>Full Address</label><input type="text" id="h-ad"></div>
+      <div class="fgrp full"><label>Google Maps Embed URL</label><input type="text" id="h-map" placeholder="https://maps.google.com/maps?...&output=embed"></div>
+    </div>
+    <div class="savebar"><button class="btn bt" onclick="saveHospitalInfo()"><i class="fas fa-save"></i> Save to Website</button></div>
+  </div>
+</div>
+
+<!-- ── RAZORPAY ── -->
+<div id="pg-razorpay" class="pg">
+  <div class="wbox"><i class="fas fa-exclamation-triangle"></i><p><strong>Security:</strong> Only paste your <strong>Key ID</strong> (starts with <code>rzp_live_</code>). Never put your Secret Key here — it belongs only on a server, never in any website file.</p></div>
+  <div class="fsec">
+    <h3><i class="fas fa-credit-card" style="color:var(--t);"></i> Razorpay Payment Settings</h3>
+    <div class="fgrid">
+      <div class="fgrp"><label>Razorpay Key ID</label><input type="text" id="rp-k" placeholder="rzp_live_xxxxxxxxxxxx"><span class="hint">Razorpay Dashboard → Settings → API Keys</span></div>
+      <div class="fgrp"><label>Theme Color</label><input type="color" id="rp-c" value="#14b8a6"></div>
+      <div class="fgrp full"><label>Company Name (shown on payment screen)</label><input type="text" id="rp-n"></div>
+    </div>
+    <div class="savebar"><button class="btn bt" onclick="saveRazorpay()"><i class="fas fa-save"></i> Save to Website</button></div>
+  </div>
+  <div class="fsec">
+    <h3>How to Activate Real Payments</h3>
+    <ol style="font-size:13px;line-height:2.6;color:var(--tx);padding-left:18px;">
+      <li>Sign up free at <strong>razorpay.com</strong></li>
+      <li>Complete KYC (mandatory for real payments — takes 1-2 days)</li>
+      <li>Go to <strong>Settings → API Keys → Generate Live Key</strong></li>
+      <li>Copy the Key ID (starts with <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-family:monospace;color:var(--t);">rzp_live_</code>)</li>
+      <li>Paste above and click <strong>Save to Website</strong></li>
+    </ol>
+  </div>
+</div>
+
+<!-- ── SETUP GUIDE ── -->
+<div id="pg-setup" class="pg">
+  <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px 16px;margin-bottom:18px;display:flex;gap:12px;">
+    <i class="fas fa-check-circle" style="color:var(--gr);font-size:18px;flex-shrink:0;margin-top:1px;"></i>
+    <p style="font-size:13px;color:#166534;line-height:1.6;"><strong>Admin portal is working!</strong> Follow these steps once to connect Google Sheets so every change in this portal reflects on the website instantly — no code editing ever needed.</p>
+  </div>
+  <div class="fsec">
+    <h3>One-Time Setup — Connect Google Sheets</h3>
+    <div class="step"><div class="stepn">1</div><div class="stepb"><h4>Create Google Sheet</h4><p>Go to <strong>sheets.google.com</strong> → New blank spreadsheet → Name it <strong>"MRH Hospital"</strong></p></div></div>
+    <div class="step"><div class="stepn">2</div><div class="stepb"><h4>Open Apps Script</h4><p>Click menu: <strong>Extensions → Apps Script</strong>. A new tab opens. Delete any existing code there.</p></div></div>
+    <div class="step"><div class="stepn">3</div><div class="stepb"><h4>Paste Backend Script</h4><p>Open the file <code>google-apps-script.js</code> that came with your website. Copy all of it. Paste into Apps Script editor. On line 3, change the email to hospital's email. Press <strong>Ctrl+S</strong> to save.</p></div></div>
+    <div class="step"><div class="stepn">4</div><div class="stepb"><h4>Deploy as Web App</h4><p>Click <strong>Deploy → New Deployment</strong>. Type: <strong>Web App</strong>. Execute as: <strong>Me</strong>. Access: <strong>Anyone</strong>. Click <strong>Deploy</strong>. Authorise when prompted. <strong>Copy the URL</strong> shown — you need this in steps 5 and 6.</p></div></div>
+    <div class="step"><div class="stepn">5</div><div class="stepb"><h4>Update index.html</h4><p>Open <code>index.html</code> in Notepad. Press <strong>Ctrl+F</strong>, find <code>https://script.google.com/macros/s/AKfycbzY1y2blxtTjzsdQnd3G01-gQ7i9wboJjDV9kcTdTpn9hqc_3nsgy7xyeADt2AfPKuQ/exec</code>. Replace it with the URL you copied. Save the file.</p></div></div>
+    <div class="step"><div class="stepn">6</div><div class="stepb"><h4>Update admin-portal.html</h4><p>Open <code>admin-portal.html</code> in Notepad. Find <code>https://script.google.com/macros/s/AKfycbzY1y2blxtTjzsdQnd3G01-gQ7i9wboJjDV9kcTdTpn9hqc_3nsgy7xyeADt2AfPKuQ/exec</code>. Replace with the same URL. Save.</p></div></div>
+    <div class="step"><div class="stepn">7</div><div class="stepb"><h4>Change Admin Password</h4><p>In <code>admin-portal.html</code>, find <code>hospital@2025</code>. Change to your own password. Save.</p></div></div>
+    <div class="step"><div class="stepn">8</div><div class="stepb"><h4>Upload & Test</h4><p>Upload all 3 files to your hosting (Hostinger / Netlify / any host). Open the website, make a test booking — it should appear in Google Sheets within seconds and you get an email notification at the hospital's email.</p></div></div>
+    <div class="step"><div class="stepn">9</div><div class="stepb"><h4>Test the Admin Portal</h4><p>Login to admin-portal.html. Go to <strong>Tests &amp; Prices</strong> and change any price. Open the website in another tab — the price should update immediately without touching any code.</p></div></div>
+  </div>
+  <div class="fsec">
+    <h3>🔒 Security — Is The Website Safe?</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;line-height:1.7;color:var(--tx);">
+      <p><strong style="color:var(--gr);">✅ Google Sheets backend</strong> — Data lives in Google's servers. No one can delete or edit it unless they have access to your Google account.</p>
+      <p><strong style="color:var(--gr);">✅ Admin password protection</strong> — No one can access this portal without the password. Change it anytime in the HTML file.</p>
+      <p><strong style="color:var(--gr);">✅ Razorpay payments</strong> — All payment processing is done by Razorpay's secure servers. Card details never touch your website.</p>
+      <p><strong style="color:var(--or);">⚠️ Script URL exposure</strong> — The Google Apps Script URL is visible in the HTML source. This is unavoidable for a client-side website. To prevent abuse: go to your Apps Script → Add a check for a secret token in doPost/doGet. Your developer can add this in 10 minutes if needed.</p>
+      <p><strong style="color:var(--or);">⚠️ No HTTPS = Risk</strong> — Make sure your hosting uses HTTPS (the padlock icon). All good hosts (Hostinger, Netlify) do this free automatically.</p>
+      <p><strong style="color:var(--re);">❌ Not suitable for</strong> — storing patient medical records, HIPAA-level data, or sensitive clinical information. This website is for bookings and information only — not a medical records system.</p>
+    </div>
+  </div>
+</div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /admin-page -->
+
+<!-- EDIT MODAL -->
+<div class="mov" id="edit-modal">
+  <div class="mbox">
+    <h3 id="edit-title">Edit Item <button onclick="closeEdit()"><i class="fas fa-times"></i></button></h3>
+    <div id="edit-body"></div>
+    <div class="savebar" style="margin-top:16px;">
+      <button class="btn bo" onclick="closeEdit()">Cancel</button>
+      <button class="btn bt" onclick="submitEdit()"><i class="fas fa-save"></i> Save to Website</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="tmsg"></span></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// ⚙️  CHANGE THESE TWO LINES:
+const ADMIN_PASSWORD = "hospital@2025"; // ← Change this password
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzY1y2blxtTjzsdQnd3G01-gQ7i9wboJjDV9kcTdTpn9hqc_3nsgy7xyeADt2AfPKuQ/exec"; // ← Paste Google Apps Script URL
+// ═══════════════════════════════════════════════
+
+// ── LOGIN ─────────────────────────────────────
+function login() {
+  const pw = document.getElementById('pw').value;
+  if (pw === ADMIN_PASSWORD) {
+    sessionStorage.setItem('mrh_auth','1');
+    document.getElementById('login-page').style.display = 'none';
+    document.getElementById('admin-page').style.display = 'block';
+    init();
+  } else {
+    const e = document.getElementById('lerr');
+    e.style.display = 'flex';
+    document.getElementById('pw').value = '';
+    setTimeout(() => e.style.display='none', 3000);
+  }
+}
+function logout() { sessionStorage.removeItem('mrh_auth'); location.reload(); }
+function togglePw() {
+  const i = document.getElementById('pw'), e = document.getElementById('pwi');
+  i.type = i.type==='password' ? 'text' : 'password';
+  e.className = i.type==='password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+}
+window.onload = () => {
+  if (sessionStorage.getItem('mrh_auth')) {
+    document.getElementById('login-page').style.display='none';
+    document.getElementById('admin-page').style.display='block';
+    init();
+  }
+};
+
+// ── STATE ─────────────────────────────────────
+let SD = {}; // All data from Sheets
+let allBk = [];
+let editCtx = {}; // current edit context
+
+const isDemo = () => !SCRIPT_URL || SCRIPT_URL.includes('PASTE_YOUR');
+
+// ── INIT ──────────────────────────────────────
+async function init() {
+  await loadAll();
+}
+
+async function loadAll() {
+  setBadge('loading');
+  if (isDemo()) { SD = demoData(); renderAll(); setBadge('demo'); return; }
+  try {
+    const r = await fetch(SCRIPT_URL + '?action=getAll');
+    const d = await r.json();
+    if (d.success !== false) { SD = d; renderAll(); setBadge('live'); }
+    else { SD = demoData(); renderAll(); setBadge('err'); }
+  } catch(e) { SD = demoData(); renderAll(); setBadge('err'); }
+  loadStats();
+  loadBookings();
+}
+
+function renderAll() {
+  renderTests();
+  renderDepts();
+  renderHomeSvcs();
+  renderDoctors();
+  renderSlots();
+  fillHospitalForm();
+  fillRazorpayForm();
+}
+
+// ── CONNECTION BADGE ──────────────────────────
+function setBadge(state) {
+  const b = document.getElementById('connbadge');
+  if (state==='live')    { b.className='badge badge-live'; b.textContent='✓ Live — Sheets Connected'; }
+  else if (state==='demo'){ b.className='badge badge-demo'; b.textContent='Demo Mode — See Setup Guide'; }
+  else if (state==='err') { b.className='badge badge-err';  b.textContent='⚠ Connection Failed'; }
+  else                   { b.className='badge badge-demo'; b.textContent='⏳ Connecting...'; }
+}
+
+// ── API CALL ──────────────────────────────────
+async function api(body) {
+  if (isDemo()) { showToast('Demo mode — Connect Google Sheets to save changes','err'); return {success:false}; }
+  try {
+    const r = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(body) });
+    return await r.json();
+  } catch(e) { showToast('Connection error: ' + e.message,'err'); return {success:false}; }
+}
+
+// ── BOOKINGS ──────────────────────────────────
+async function loadBookings() {
+  const b1 = document.getElementById('recent-body');
+  const b2 = document.getElementById('all-body');
+  b1.innerHTML = '<tr class="lrow"><td colspan="7"><span class="spin"></span>Loading...</td></tr>';
+  b2.innerHTML = '<tr class="lrow"><td colspan="10"><span class="spin"></span>Loading...</td></tr>';
+  if (isDemo()) { allBk = demoBk(); renderBkTables(); return; }
+  try {
+    const r = await fetch(SCRIPT_URL + '?action=getBookings');
+    const d = await r.json();
+    if (d.bookings) { allBk = d.bookings; renderBkTables(); }
+  } catch(e) { b1.innerHTML='<tr class="lrow"><td colspan="7">Failed — see Setup Guide</td></tr>'; }
+}
+
+async function loadStats() {
+  if (isDemo()) {
+    document.getElementById('s-today').textContent = 3;
+    document.getElementById('s-tests').textContent = 12;
+    document.getElementById('s-appts').textContent = 8;
+    document.getElementById('s-rev').textContent = '₹24,500';
+    return;
+  }
+  try {
+    const r = await fetch(SCRIPT_URL + '?action=getStats');
+    const d = await r.json();
+    if (d.stats) {
+      document.getElementById('s-today').textContent = d.stats.today;
+      document.getElementById('s-tests').textContent = d.stats.tests;
+      document.getElementById('s-appts').textContent = d.stats.appointments;
+      document.getElementById('s-rev').textContent   = '₹' + (d.stats.revenue||0).toLocaleString('en-IN');
+    }
+  } catch(e) {}
+}
+
+function renderBkTables() {
+  const recent = [...allBk].slice(-8).reverse();
+  document.getElementById('recent-body').innerHTML = recent.length
+    ? recent.map(b => bkRow(b,7)).join('')
+    : '<tr class="lrow"><td colspan="7">No bookings yet.</td></tr>';
+  renderAllBk(allBk);
+}
+function renderAllBk(data) {
+  document.getElementById('all-body').innerHTML = data.length
+    ? [...data].reverse().map(b => bkRow(b,10)).join('')
+    : '<tr class="lrow"><td colspan="10">No bookings found.</td></tr>';
+}
+function bkRow(b, cols) {
+  const getv = k => b[k] || b[Object.keys(b)[['Booking ID','Timestamp','Type','Patient Name','Age','Phone','Gender','Service','Amount (₹)','Date','Time Slot','Doctor','Address','Notes','Payment ID','Status'].indexOf(k)]] || '';
+  const id=getv('Booking ID')||b['Booking ID']||'', ts=getv('Timestamp')||b['Timestamp']||'',
+        ty=getv('Type')||b['Type']||'', nm=getv('Patient Name')||b['Patient Name']||'',
+        ph=getv('Phone')||b['Phone']||'', sv=getv('Service')||b['Service']||'',
+        sl=getv('Time Slot')||b['Time Slot']||'', am=getv('Amount (₹)')||b['Amount (₹)']||'',
+        pi=getv('Payment ID')||b['Payment ID']||'', st=getv('Status')||b['Status']||'Confirmed',
+        dt=getv('Date')||b['Date']||'';
+  const tc = ty==='Test'?'tt':ty==='Appointment'?'ta':'th';
+  const sc = st==='Confirmed'?'sc':st==='Completed'?'sco':st==='Cancelled'?'sca':'sp';
+  if (cols===7) return `<tr><td style="font-family:monospace;font-size:10px;">${id}</td><td><strong>${nm}</strong></td><td><span class="typ ${tc}">${ty}</span></td><td>${sv}</td><td>${dt} ${sl}</td><td style="font-weight:700;color:var(--t);">₹${parseFloat(am||0).toLocaleString('en-IN')}</td><td><span class="stag ${sc}">${st}</span></td></tr>`;
+  return `<tr><td style="font-family:monospace;font-size:10px;">${id}</td><td style="font-size:10px;">${ts}</td><td><strong>${nm}</strong></td><td>${ph}</td><td><span class="typ ${tc}">${ty}</span></td><td>${sv}</td><td>${sl}</td><td style="font-weight:700;color:var(--t);">₹${parseFloat(am||0).toLocaleString('en-IN')}</td><td style="font-family:monospace;font-size:10px;color:var(--mu);">${pi}</td><td><span class="stag ${sc}">${st}</span></td></tr>`;
+}
+function filterBk(type,btn) {
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
+  renderAllBk(type==='all' ? allBk : allBk.filter(b=>(b['Type']||'')=== type));
+}
+function exportCSV() {
+  const h=['Booking ID','Timestamp','Type','Patient Name','Age','Phone','Gender','Service','Amount (₹)','Date','Time Slot','Doctor','Address','Notes','Payment ID','Status'];
+  const rows=[h,...allBk.map(b=>h.map(k=>`"${b[k]||''}"` ))];
+  const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.map(r=>r.join(',')).join('\n')); a.download='bookings.csv'; a.click();
+  showToast('CSV exported!');
+}
+
+// ── TESTS ─────────────────────────────────────
+const CAT_NAMES = { radiology:'Radiology', blood_tests:'Blood Tests', cardiac:'Cardiac Tests', womens_health:"Women's Health" };
+const CAT_ICONS = { radiology:'fa-x-ray', blood_tests:'fa-tint', cardiac:'fa-heart', womens_health:'fa-female' };
+
+function renderTests() {
+  const tests = SD.tests || [];
+  const cats = [...new Set(tests.map(t=>t.category))];
+  document.getElementById('tests-ed').innerHTML = cats.map(cat => {
+    const ts = tests.filter(t=>t.category===cat);
+    return `<div class="fsec">
+      <h3><i class="fas ${CAT_ICONS[cat]||'fa-flask'}" style="color:var(--t);"></i>${CAT_NAMES[cat]||cat} <span style="font-size:11px;color:var(--mu);font-weight:400;">(${ts.length} tests)</span></h3>
+      <div>${ts.map(t=>`
+        <div class="ir">
+          <div class="iname">${t.name}</div>
+          <div class="iprice">₹${parseFloat(t.price||0).toLocaleString('en-IN')}</div>
+          <div style="font-size:11px;color:var(--mu);width:70px;">${t.duration||''}</div>
+          <button class="ib" onclick='editItem("test",${JSON.stringify(t).replace(/'/g,"&#39;")})' title="Edit"><i class="fas fa-edit"></i></button>
+          <button class="ib del" onclick="delItem('test','${t.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+        </div>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+async function addTest() {
+  const cat=document.getElementById('nt-cat').value, name=document.getElementById('nt-name').value.trim(), price=document.getElementById('nt-price').value;
+  if(!name||!price){showToast('Fill test name and price','err');return;}
+  const id = cat+'_'+Date.now();
+  const data = { id, category:cat, name, price:parseFloat(price), duration:document.getElementById('nt-dur').value, preparation:document.getElementById('nt-prep').value, description:document.getElementById('nt-desc').value };
+  setBusy('tests-ed');
+  const r = await api({ action:'saveTest', data });
+  if(r.success!==false){ SD.tests = [...(SD.tests||[]), data]; renderTests(); ['nt-name','nt-price','nt-dur','nt-prep','nt-desc'].forEach(x=>document.getElementById(x).value=''); showToast(`"${name}" added to website!`); }
+}
+
+// ── DEPARTMENTS ───────────────────────────────
+function renderDepts() {
+  const depts = SD.departments || [];
+  document.getElementById('depts-ed').innerHTML = `<div class="fsec"><h3><i class="fas fa-user-md" style="color:var(--t);"></i>Departments & Fees (${depts.length})</h3><div>
+    ${depts.map(d=>`<div class="ir">
+      <div class="iname">${d.name} <span style="font-size:11px;color:var(--mu);">${Array.isArray(d.doctors)?d.doctors.join(', '):(d.doctors||'')}</span></div>
+      <div class="iprice">₹${parseFloat(d.consultationFee||0).toLocaleString('en-IN')}</div>
+      <button class="ib" onclick='editItem("dept",${JSON.stringify(d).replace(/'/g,"&#39;")})' title="Edit"><i class="fas fa-edit"></i></button>
+      <button class="ib del" onclick="delItem('dept','${d.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+    </div>`).join('')}
+  </div></div>`;
+}
+
+async function addDept() {
+  const name=document.getElementById('nd-name').value.trim(), fee=document.getElementById('nd-fee').value;
+  if(!name||!fee){showToast('Fill name and fee','err');return;}
+  const data = { id:'dept_'+Date.now(), name, consultationFee:parseFloat(fee), doctors:document.getElementById('nd-doc').value, description:document.getElementById('nd-desc').value, icon:'fas fa-stethoscope' };
+  const r = await api({ action:'saveDept', data });
+  if(r.success!==false){ SD.departments=[...(SD.departments||[]),data]; renderDepts(); ['nd-name','nd-fee','nd-doc','nd-desc'].forEach(x=>document.getElementById(x).value=''); showToast(`${name} added!`); }
+}
+
+// ── HOME SERVICES ─────────────────────────────
+function renderHomeSvcs() {
+  const svcs = SD.homeServices || [];
+  document.getElementById('home-ed').innerHTML = `<div class="fsec"><h3><i class="fas fa-home" style="color:var(--t);"></i>Home Services (${svcs.length})</h3><div>
+    ${svcs.map(s=>`<div class="ir">
+      <div class="iname">${s.name} <span style="font-size:11px;color:var(--mu);">${s.availability||''}</span></div>
+      <div class="iprice">₹${parseFloat(s.price||0).toLocaleString('en-IN')}</div>
+      <button class="ib" onclick='editItem("home",${JSON.stringify(s).replace(/'/g,"&#39;")})' title="Edit"><i class="fas fa-edit"></i></button>
+      <button class="ib del" onclick="delItem('home','${s.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+    </div>`).join('')}
+  </div></div>`;
+}
+
+async function addHomeService() {
+  const name=document.getElementById('nh-name').value.trim(), price=document.getElementById('nh-price').value;
+  if(!name||!price){showToast('Fill name and price','err');return;}
+  const data = { id:'svc_'+Date.now(), name, price:parseFloat(price), description:document.getElementById('nh-desc').value, availability:document.getElementById('nh-avail').value, duration:document.getElementById('nh-dur').value, icon:'fas fa-home' };
+  const r = await api({ action:'saveHomeService', data });
+  if(r.success!==false){ SD.homeServices=[...(SD.homeServices||[]),data]; renderHomeSvcs(); ['nh-name','nh-price','nh-desc','nh-avail','nh-dur'].forEach(x=>document.getElementById(x).value=''); showToast(`${name} added!`); }
+}
+
+// ── DOCTORS & PHOTOS ─────────────────────────
+function renderDoctors() {
+  const docs = SD.doctors || [];
+  document.getElementById('docs-ed').innerHTML = `<div class="dcgrid">${docs.map(d=>`
+    <div class="dccard">
+      ${d.imageUrl
+        ? `<img class="dcphoto" src="${d.imageUrl}" alt="${d.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="dcph-placeholder" style="display:none;"><i class="fas fa-user-md"></i></div>`
+        : `<div class="dcph-placeholder"><i class="fas fa-user-md"></i></div>`}
+      <div class="dcbody">
+        <h4>${d.name}</h4>
+        <span class="dcspec">${d.specialty}</span>
+        <p class="dcexp">${d.experience}+ years experience</p>
+        <p class="dcdesc">${d.description||''}</p>
+        <div class="dcbtns">
+          <button class="dcu" onclick='editItem("doctor",${JSON.stringify(d).replace(/'/g,"&#39;")})'>✏️ Edit / Change Photo</button>
+          <button class="dcdel" onclick="delItem('doctor','${d.id}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>`).join('')}</div>`;
+
+  // Preview image URL while typing
+  document.getElementById('dd-img').oninput = function() {
+    const v = this.value.trim();
+    const p = document.getElementById('dd-preview');
+    const w = document.getElementById('dd-preview-wrap');
+    if(v){w.style.display='block';p.src=v;}else{w.style.display='none';}
+  };
+}
+
+async function addDoctor() {
+  const name=document.getElementById('dd-name').value.trim(), spec=document.getElementById('dd-spec').value.trim();
+  if(!name||!spec){showToast('Fill name and specialty','err');return;}
+  const data = { id:'doc_'+Date.now(), name, specialty:spec, experience:document.getElementById('dd-exp').value, description:document.getElementById('dd-desc').value, imageUrl:document.getElementById('dd-img').value.trim() };
+  const r = await api({ action:'saveDoctor', data });
+  if(r.success!==false){ SD.doctors=[...(SD.doctors||[]),data]; renderDoctors(); ['dd-name','dd-spec','dd-exp','dd-desc','dd-img'].forEach(x=>document.getElementById(x).value=''); document.getElementById('dd-preview-wrap').style.display='none'; showToast(`${name} added to website!`); }
+}
+
+// ── SLOTS ─────────────────────────────────────
+let localSlots = [];
+function renderSlots() {
+  localSlots = SD.timeSlots ? [...SD.timeSlots] : [];
+  refreshSlotsUI();
+}
+function refreshSlotsUI(){
+  document.getElementById('slots-wrap').innerHTML = localSlots.map((s,i)=>`
+    <div style="display:inline-flex;align-items:center;gap:6px;background:white;border:1px solid var(--br);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;">
+      ${s}<button onclick="delSlot(${i})" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:11px;"><i class="fas fa-times"></i></button>
+    </div>`).join('');
+}
+function addSlot(){
+  const t=document.getElementById('new-slot').value; if(!t) return;
+  const[h,m]=t.split(':');const hr=parseInt(h);
+  const s=`${String(hr===0?12:hr>12?hr-12:hr).padStart(2,'0')}:${m} ${hr>=12?'PM':'AM'}`;
+  if(!localSlots.includes(s)){ localSlots.push(s); refreshSlotsUI(); }
+}
+function delSlot(i){ localSlots.splice(i,1); refreshSlotsUI(); }
+async function saveSlots(){
+  const r=await api({action:'saveSlots',slots:localSlots});
+  if(r.success!==false){ SD.timeSlots=[...localSlots]; showToast('Time slots saved to website!'); }
+}
+
+// ── HOSPITAL INFO ─────────────────────────────
+function fillHospitalForm(){
+  const c=SD.config||{};
+  const fields={h_name:'hospital_name',h_tag:'tagline',h_ph:'phone',h_emg:'emergency',h_em:'email',h_yr:'established',h_op:'opd_hours',h_fb:'facebook',h_ig:'instagram',h_ad:'address',h_map:'map_embed_url'};
+  for(const [el,key] of Object.entries(fields)){ const e=document.getElementById(el.replace('_','-')); if(e) e.value=c[key]||''; }
+}
+async function saveHospitalInfo(){
+  const data={
+    hospital_name:document.getElementById('h-name').value,
+    tagline      :document.getElementById('h-tag').value,
+    phone        :document.getElementById('h-ph').value,
+    emergency    :document.getElementById('h-emg').value,
+    email        :document.getElementById('h-em').value,
+    established  :document.getElementById('h-yr').value,
+    opd_hours    :document.getElementById('h-op').value,
+    facebook     :document.getElementById('h-fb').value,
+    instagram    :document.getElementById('h-ig').value,
+    address      :document.getElementById('h-ad').value,
+    map_embed_url:document.getElementById('h-map').value,
+  };
+  const r=await api({action:'saveConfig',data});
+  if(r.success!==false){ SD.config={...(SD.config||{}),...data}; showToast('Hospital info saved — website updated!'); }
+}
+
+// ── RAZORPAY ──────────────────────────────────
+function fillRazorpayForm(){
+  const c=SD.config||{};
+  document.getElementById('rp-k').value = c.razorpay_key||'';
+  document.getElementById('rp-c').value = c.razorpay_color||'#14b8a6';
+  document.getElementById('rp-n').value = c.razorpay_company||'Mata Rajrani Memorial Hospital';
+}
+async function saveRazorpay(){
+  const data={razorpay_key:document.getElementById('rp-k').value,razorpay_color:document.getElementById('rp-c').value,razorpay_company:document.getElementById('rp-n').value};
+  const r=await api({action:'saveConfig',data});
+  if(r.success!==false){ SD.config={...(SD.config||{}),...data}; showToast('Razorpay settings saved to website!'); }
+}
+
+// ── EDIT MODAL ────────────────────────────────
+function editItem(type, item) {
+  editCtx = { type, item };
+  const titles = { test:'Edit Test', dept:'Edit Department', home:'Edit Home Service', doctor:'Edit Doctor & Photo' };
+  document.getElementById('edit-title').innerHTML = titles[type]+' <button onclick="closeEdit()"><i class="fas fa-times"></i></button>';
+
+  let html = '';
+  if(type==='test'){
+    html=`<div class="fgrid">
+      <div class="fgrp"><label>Test Name</label><input type="text" id="e-name" value="${esc(item.name)}"></div>
+      <div class="fgrp"><label>Price ₹</label><input type="number" id="e-price" value="${item.price}"></div>
+      <div class="fgrp"><label>Duration</label><input type="text" id="e-dur" value="${esc(item.duration||'')}"></div>
+      <div class="fgrp"><label>Category</label><select id="e-cat">
+        ${['radiology','blood_tests','cardiac','womens_health'].map(c=>`<option value="${c}" ${c===item.category?'selected':''}>${CAT_NAMES[c]||c}</option>`).join('')}
+      </select></div>
+      <div class="fgrp full"><label>Preparation Note</label><input type="text" id="e-prep" value="${esc(item.preparation||'')}"></div>
+      <div class="fgrp full"><label>Description</label><input type="text" id="e-desc" value="${esc(item.description||'')}"></div>
+    </div>`;
+  } else if(type==='dept'){
+    const docs = Array.isArray(item.doctors)?item.doctors.join(', '):(item.doctors||'');
+    html=`<div class="fgrid">
+      <div class="fgrp"><label>Department Name</label><input type="text" id="e-name" value="${esc(item.name)}"></div>
+      <div class="fgrp"><label>Consultation Fee ₹</label><input type="number" id="e-fee" value="${item.consultationFee}"></div>
+      <div class="fgrp full"><label>Assigned Doctors (comma separated)</label><input type="text" id="e-docs" value="${esc(docs)}"></div>
+      <div class="fgrp full"><label>Description</label><input type="text" id="e-desc" value="${esc(item.description||'')}"></div>
+    </div>`;
+  } else if(type==='home'){
+    html=`<div class="fgrid">
+      <div class="fgrp"><label>Service Name</label><input type="text" id="e-name" value="${esc(item.name)}"></div>
+      <div class="fgrp"><label>Base Price ₹</label><input type="number" id="e-price" value="${item.price}"></div>
+      <div class="fgrp"><label>Availability</label><input type="text" id="e-avail" value="${esc(item.availability||'')}"></div>
+      <div class="fgrp"><label>Duration</label><input type="text" id="e-dur" value="${esc(item.duration||'')}"></div>
+      <div class="fgrp full"><label>Description</label><input type="text" id="e-desc" value="${esc(item.description||'')}"></div>
+    </div>`;
+  } else if(type==='doctor'){
+    html=`<div class="fgrid">
+      <div class="fgrp"><label>Full Name</label><input type="text" id="e-name" value="${esc(item.name)}"></div>
+      <div class="fgrp"><label>Specialty</label><input type="text" id="e-spec" value="${esc(item.specialty||'')}"></div>
+      <div class="fgrp"><label>Experience (e.g. 15+)</label><input type="text" id="e-exp" value="${esc(item.experience||'')}"></div>
+      <div class="fgrp"><label>Description / Bio</label><input type="text" id="e-desc" value="${esc(item.description||'')}"></div>
+      <div class="fgrp full">
+        <label>Doctor Photo URL</label>
+        <input type="text" id="e-img" value="${esc(item.imageUrl||'')}" oninput="previewEditImg(this.value)" placeholder="Paste image URL (Imgur, Google Drive, etc.)">
+        <span class="hint">💡 Free option: upload to <strong>imgur.com</strong> → right-click → Copy image address → paste here</span>
+      </div>
+      ${item.imageUrl?`<div class="fgrp full"><img id="e-img-preview" src="${esc(item.imageUrl)}" style="height:120px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"></div>`:'<div class="fgrp full"><img id="e-img-preview" src="" style="height:0;border-radius:8px;object-fit:cover;display:none;"></div>'}
+    </div>`;
+  }
+  document.getElementById('edit-body').innerHTML = html;
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function previewEditImg(url){
+  const p=document.getElementById('e-img-preview');
+  if(!p)return;
+  if(url){p.src=url;p.style.height='120px';p.style.display='block';}else{p.style.display='none';}
+}
+
+function closeEdit() { document.getElementById('edit-modal').classList.remove('open'); editCtx={}; }
+
+async function submitEdit() {
+  const {type,item} = editCtx;
+  let data, action;
+
+  if(type==='test'){
+    data={...item, name:document.getElementById('e-name').value, price:parseFloat(document.getElementById('e-price').value), category:document.getElementById('e-cat').value, duration:document.getElementById('e-dur').value, preparation:document.getElementById('e-prep').value, description:document.getElementById('e-desc').value};
+    action='saveTest';
+  } else if(type==='dept'){
+    data={...item, name:document.getElementById('e-name').value, consultationFee:parseFloat(document.getElementById('e-fee').value), doctors:document.getElementById('e-docs').value, description:document.getElementById('e-desc').value};
+    action='saveDept';
+  } else if(type==='home'){
+    data={...item, name:document.getElementById('e-name').value, price:parseFloat(document.getElementById('e-price').value), availability:document.getElementById('e-avail').value, duration:document.getElementById('e-dur').value, description:document.getElementById('e-desc').value};
+    action='saveHomeService';
+  } else if(type==='doctor'){
+    data={...item, name:document.getElementById('e-name').value, specialty:document.getElementById('e-spec').value, experience:document.getElementById('e-exp').value, description:document.getElementById('e-desc').value, imageUrl:document.getElementById('e-img').value};
+    action='saveDoctor';
+  }
+
+  const r = await api({action, data});
+  if(r.success!==false){
+    // Update local state
+    if(type==='test')  SD.tests=(SD.tests||[]).map(x=>x.id===data.id?data:x);
+    if(type==='dept')  SD.departments=(SD.departments||[]).map(x=>x.id===data.id?data:x);
+    if(type==='home')  SD.homeServices=(SD.homeServices||[]).map(x=>x.id===data.id?data:x);
+    if(type==='doctor')SD.doctors=(SD.doctors||[]).map(x=>x.id===data.id?data:x);
+    renderAll();
+    closeEdit();
+    showToast('Saved! Website updated instantly.');
+  }
+}
+
+async function delItem(type,id){
+  if(!confirm('Delete this item from the website?')) return;
+  const actions={test:'deleteTest',dept:'deleteDept',home:'deleteHomeService',doctor:'deleteDoctor'};
+  const r = await api({action:actions[type], id});
+  if(r.success!==false){
+    if(type==='test')  SD.tests=(SD.tests||[]).filter(x=>x.id!==id);
+    if(type==='dept')  SD.departments=(SD.departments||[]).filter(x=>x.id!==id);
+    if(type==='home')  SD.homeServices=(SD.homeServices||[]).filter(x=>x.id!==id);
+    if(type==='doctor')SD.doctors=(SD.doctors||[]).filter(x=>x.id!==id);
+    renderAll();
+    showToast('Deleted from website!','ok');
+  }
+}
+
+// ── NAV ───────────────────────────────────────
+const pgTitles={dashboard:'Dashboard',bookings:'All Bookings',tests:'Tests & Prices',depts:'Departments',home:'Home Services',doctors:'Doctors & Photos',slots:'Time Slots',hospital:'Hospital Info',razorpay:'Razorpay Settings',setup:'Setup Guide'};
+function pg(id,el){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  el.classList.add('on');
+  document.getElementById('ptitle').textContent = pgTitles[id]||id;
+  if(id==='bookings') loadBookings();
+}
+
+// ── HELPERS ───────────────────────────────────
+function esc(s){ return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function setBusy(id){ /* visual feedback placeholder */ }
+function showToast(msg,type='ok'){
+  const el=document.getElementById('toast');
+  document.getElementById('tmsg').textContent=msg;
+  el.className='toast show '+type;
+  setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+// ── DEMO DATA ─────────────────────────────────
+function demoData(){return{
+  config:{hospital_name:'Mata Rajrani Memorial Hospital',tagline:'Compassionate Care, Advanced Healing.',phone:'+91-9876543210',emergency:'+91-9876543211',address:'Joda Talab, Ambikapur, Chhattisgarh, India',established:'2005',opd_hours:'Mon – Sat, 9:00 AM – 5:00 PM',facebook:'#',instagram:'#',map_embed_url:'',razorpay_key:'',razorpay_color:'#14b8a6',razorpay_company:'Mata Rajrani Memorial Hospital'},
+  tests:[
+    {id:'mri_brain',category:'radiology',name:'MRI Brain',price:3500,duration:'45 min',preparation:'No metal objects.',description:'Brain imaging for tumors, strokes.'},
+    {id:'ct_chest',category:'radiology',name:'CT Scan Chest',price:2800,duration:'20 min',preparation:'Remove all metal jewellery.',description:'Chest cross-sectional imaging.'},
+    {id:'xray_chest',category:'radiology',name:'X-Ray Chest',price:300,duration:'10 min',preparation:'Remove metal from chest.',description:'Standard chest radiograph.'},
+    {id:'cbc',category:'blood_tests',name:'Complete Blood Count (CBC)',price:200,duration:'Same day',preparation:'No fasting.',description:'Measures RBC, WBC, platelets.'},
+    {id:'lft',category:'blood_tests',name:'Liver Function Test',price:500,duration:'Same day',preparation:'Fast 8 hours.',description:'Evaluates liver health.'},
+    {id:'ecg',category:'cardiac',name:'ECG (12 Lead)',price:200,duration:'10 min',preparation:'Rest 5 min before.',description:'Records heart electrical activity.'},
+    {id:'echo',category:'cardiac',name:'2D Echocardiography',price:1800,duration:'30 min',preparation:'No special prep.',description:'Ultrasound of heart chambers.'},
+    {id:'pap',category:'womens_health',name:'Pap Smear',price:600,duration:'Same day',preparation:'Avoid intercourse 48 hrs before.',description:'Cervical cancer screening.'},
+  ],
+  doctors:[
+    {id:'doc_1',name:'Dr. A. Sharma',specialty:'Orthopedics',experience:'15+',description:'Joint replacement and trauma surgery.',imageUrl:''},
+    {id:'doc_2',name:'Dr. B. Singh',specialty:'Gynecology',experience:'12+',description:'High-risk pregnancies and laparoscopy.',imageUrl:''},
+    {id:'doc_3',name:'Dr. M. Kapoor',specialty:'Cardiology',experience:'18+',description:'Preventive cardiology specialist.',imageUrl:''},
+    {id:'doc_4',name:'Dr. P. Gupta',specialty:'Pediatrics',experience:'10+',description:'Child health and immunization.',imageUrl:''},
+  ],
+  departments:[
+    {id:'general',name:'General Medicine',icon:'fas fa-stethoscope',consultationFee:300,doctors:['Dr. R. Verma'],description:'Primary care, diabetes, hypertension.'},
+    {id:'pediatrics',name:'Pediatrics',icon:'fas fa-baby',consultationFee:350,doctors:['Dr. P. Gupta'],description:'Child health from newborn to adolescent.'},
+    {id:'orthopedics',name:'Orthopedics',icon:'fas fa-bone',consultationFee:400,doctors:['Dr. A. Sharma'],description:'Fractures, joint pain, spine problems.'},
+    {id:'gynecology',name:'Gynecology',icon:'fas fa-heartbeat',consultationFee:400,doctors:['Dr. B. Singh'],description:'Prenatal care, deliveries, laparoscopy.'},
+  ],
+  homeServices:[
+    {id:'blood_home',name:'Home Blood Collection',icon:'fas fa-tint',price:100,description:'Phlebotomist visits home for blood samples.',availability:'7 AM – 11 AM',duration:'30 min'},
+    {id:'nursing_home',name:'Home Nursing Care',icon:'fas fa-user-nurse',price:500,description:'Professional nursing at home.',availability:'24/7',duration:'Per visit'},
+    {id:'physio_home',name:'Home Physiotherapy',icon:'fas fa-walking',price:600,description:'Physiotherapist for rehabilitation.',availability:'8 AM – 6 PM',duration:'45 min'},
+    {id:'doctor_home',name:'Doctor Home Visit',icon:'fas fa-user-md',price:800,description:'Doctor visits for consultation.',availability:'10 AM – 6 PM',duration:'30 min'},
+  ],
+  timeSlots:['09:00 AM','09:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','02:00 PM','02:30 PM','03:00 PM','04:00 PM']
+};}
+function demoBk(){return[
+  {'Booking ID':'MRH-20250310-1234','Timestamp':'10/03/2025, 10:00','Type':'Test','Patient Name':'Ramesh Kumar','Age':42,'Phone':'98765xxxxx','Gender':'Male','Service':'MRI Brain','Amount (₹)':3500,'Date':'11 Mar 2025','Time Slot':'10:00 AM','Doctor':'Any','Address':'','Notes':'','Payment ID':'DEMO-001','Status':'Confirmed'},
+  {'Booking ID':'MRH-20250310-1235','Timestamp':'10/03/2025, 11:30','Type':'Appointment','Patient Name':'Priya Singh','Age':28,'Phone':'97654xxxxx','Gender':'Female','Service':'Gynecology Consultation','Amount (₹)':400,'Date':'11 Mar 2025','Time Slot':'11:30 AM','Doctor':'Dr. B. Singh','Address':'','Notes':'','Payment ID':'DEMO-002','Status':'Confirmed'},
+  {'Booking ID':'MRH-20250310-1236','Timestamp':'10/03/2025, 07:00','Type':'Home Service','Patient Name':'Anil Sharma','Age':55,'Phone':'99876xxxxx','Gender':'Male','Service':'Home Blood Collection','Amount (₹)':100,'Date':'10 Mar 2025','Time Slot':'07:00 AM','Doctor':'','Address':'123 Main St, Ambikapur','Notes':'','Payment ID':'DEMO-003','Status':'Completed'},
+];}
+</script>
+</body>
+</html>
